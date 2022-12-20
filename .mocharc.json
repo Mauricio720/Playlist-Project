@@ -1,0 +1,8 @@
+{
+  "require": ["ts-node/register", "tsconfig-paths/register"],
+  "watch-files": ["./**/*.ts"],
+  "bail": true,
+  "inline-diffs": true,
+  "ignore": ["node_modules"],
+  "recursive": true
+}

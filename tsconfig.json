@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "module": "CommonJS",
+    "lib": ["es6"],
+    "allowJs": false,
+    "moduleResolution": "Node",
+    "outDir": "build",
+    "rootDir": ".",
+    "removeComments": true,
+    "typeRoots": ["./node_modules/@types", "./src/@types"],
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": "./src",
+    "strict": false
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "build/**/*.test.ts", "build/**/*.spec.ts"]
+}
