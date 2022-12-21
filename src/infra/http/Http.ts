@@ -35,14 +35,8 @@ export type Handler = (
 ) => Promise<void> | void;
 
 export interface HttpServer<T = any> {
-  getApp(): T;
   listen(port: number, callback: () => void): void;
   registerMiddleware(handler: Handler): void;
   static(path: string): void;
-  on(
-    method: Method,
-    route: string,
-    handler: Handler,
-    ...middleware: Handler[]
-  ): void;
+ 
 }

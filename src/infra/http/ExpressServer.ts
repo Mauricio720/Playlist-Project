@@ -1,6 +1,6 @@
 import { Server } from "./Server";
 import express, { Express } from "express";
-import { Handler } from "./Http";
+import { Handler, Method } from "./Http";
 
 export class ExpressServer implements Server {
   private app: Express = express();
@@ -25,8 +25,8 @@ export class ExpressServer implements Server {
     this.app.get(route, ...handler);
   }
 
-  post(route: string, ...handler: Handler[]): void {
-    this.app.post(route, ...handler);
+  post(method:Method,route: string, ...handler: Handler[]): void {
+    this.app.post(method,route, ...handler);
   }
 
   put(route: string, ...handler: Handler[]): void {
