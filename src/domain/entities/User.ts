@@ -7,8 +7,8 @@ export namespace User {
     readonly id: string;
     name: string;
     email: string;
-    password: string;
-    dateRegister: Date;
+    password?: string;
+    dateRegister?: Date;
     favoriteCategory: Category[];
     favoriteArtist: Artist[];
   }
@@ -22,7 +22,7 @@ export class User {
   public dateRegister: Date;
   public favoriteCategory: Category[];
   public favoriteArtist: Artist[];
-  public active: boolean = true;
+  public active = true;
 
   constructor(props: User.Props) {
     Object.assign(this, props);
