@@ -38,5 +38,4 @@ export interface HttpServer<T = any> {
   listen(port: number, callback: () => void): void;
   registerMiddleware(handler: Handler): void;
   static(path: string): void;
- 
 }

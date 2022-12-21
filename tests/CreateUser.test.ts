@@ -1,5 +1,3 @@
-import { User } from "domain/entities/User";
-import { CryptoIdentifier } from "infra/security/CryptoIdentifier";
 import { Identifier } from "infra/security/Identifier";
 import { Encrypt } from "infra/security/Encrypt";
 import { CreateUser } from "application/useCases/CreateUser";
