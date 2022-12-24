@@ -8,19 +8,19 @@ export class UserRepositoryMemory implements UserRepository{
         return this.users
     }
     
-    async createUser(user: User):Promise<User>{
+    async create(user: User):Promise<User>{
         this.users.push(user)
         return user;
     }
 
-    async updateUser(user: User):Promise<User>{
+    async update(user: User):Promise<User>{
         const filterUsers=this.users.filter((userItem)=>userItem.id!==user.id)
         filterUsers.push(user)
         this.users=filterUsers;
         return user;
     }
 
-    async deleteUser(id:string){
+    async delete(id:string){
         const filterUsers=this.users.filter((userItem)=>userItem.id!==id)
         this.users=filterUsers;
     }

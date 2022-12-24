@@ -16,7 +16,7 @@ export class CreateUser{
 
         const user=new User({...data,id:newId,password,dateRegister:new Date()})
 
-        await this.userRepository.createUser(user)
+        await this.userRepository.create(user)
         
         return user;
     }
