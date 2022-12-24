@@ -29,4 +29,10 @@ export class UserRepositoryMemory implements UserRepository{
         const index=this.users.findIndex((userItem)=>userItem.id===id)
         return this.users[index]
     }
+
+    async findByEmail(email: string):Promise<User>{
+        const index=this.users.findIndex((userItem)=>userItem.email===email)
+        return this.users[index]
+    }
+
 }
