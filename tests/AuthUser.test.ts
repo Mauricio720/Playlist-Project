@@ -25,8 +25,15 @@ describe('Auth User',async ()=>{
         },
     };
 
-    const createUser=new CreateUser(identifier,encrypt,userRepository)
-    const user=await createUser.execute({
+    const authenticador: Authenticator = {
+        createToken() {
+            return "any token";
+        },
+        decoder() {},
+    };
+
+    const createUser=new CreateUser(identifier,encrypt,authenticador,userRepository)
+    await createUser.execute({
         name:"any",
         email: "any@any.com",
         password: "any",
@@ -37,13 +44,6 @@ describe('Auth User',async ()=>{
         favoriteArtist: [{ id: "any", name: "any" }],
     })
 
-    const authenticador: Authenticator = {
-        createToken() {
-            return "any token";
-        },
-        decoder() {},
-    };
-      
     const authUser=new AuthUser(authenticador,encrypt,userRepository)
     
     it('should authenticate user',async ()=>{
@@ -51,10 +51,19 @@ describe('Auth User',async ()=>{
         assert.deepEqual(token, "any token"); 
     });
 
-    it('should throws error authenticate user',async ()=>{
+    it('should throws an error when email is not found',async ()=>{
         await assert.rejects(
             async () => await authUser.execute({email:'any@error.com',password:'any'}),
             new AuthInvalid()
         );
     })
+
+    it("should throw an exception when password is invalid", async () => {
+        await assert.rejects(
+          async () => await authUser.execute({email:"any@any.com", password:"abc"}),
+          new AuthInvalid()
+        );
+    });
+
+    
 })
