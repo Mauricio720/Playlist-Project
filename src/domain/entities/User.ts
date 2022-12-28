@@ -9,8 +9,8 @@ export namespace User {
     email: string;
     password?: string;
     dateRegister?: Date;
-    favoriteCategory: Category[];
-    favoriteArtist: Artist[];
+    favoriteCategory?: Category[];
+    favoriteArtist?: Artist[];
   }
 }
 
@@ -28,7 +28,7 @@ export class User {
     Object.assign(this, props);
 
     if (!this.name || !this.email) {
-      throw new FieldMissing("Name or Email");
+      throw new FieldMissing("Name and Email");
     }
   }
 }
