@@ -33,6 +33,6 @@ describe("User", () => {
   it("throw error name or email missing user", () => {
     assert.throws(() => {
       new User({ ...INITIAL_VALUES, name: "", email: "" });
-    }, new FieldMissing("Name or Email"));
+    }, new FieldMissing("Name and Email"));
   });
 });

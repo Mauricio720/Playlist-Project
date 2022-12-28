@@ -17,7 +17,7 @@ describe('Auth User',async ()=>{
     }
     
     const encrypt: Encrypt = {
-        compare(password, encripted) {
+        async compare(password, encripted) {
           return `${password}_enc` === encripted;
         },
         encript(password) {
