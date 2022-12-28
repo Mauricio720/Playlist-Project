@@ -3,37 +3,37 @@ import express, { Express } from "express";
 import { Handler} from "./Http";
 
 export class ExpressServer implements Server {
-  private app: Express = express();
+  private server: Express = express();
 
   constructor() {
-    this.app.use(express.json());
+    this.server.use(express.json());
   }
 
   registerMiddleware(handler: Handler): void {
-    this.app.use(handler);
+    this.server.use(handler);
   }
 
   static(path: string): void {
-    this.app.use(express.static(path));
+    this.server.use(express.static(path));
   }
 
   listen(port: number, callback: () => void): void {
-    this.app.listen(port, callback);
+    this.server.listen(port, callback);
   }
 
   get(route: string, ...handler: Handler[]): void {
-    this.app.get(route, ...handler);
+    this.server.get(route, ...handler);
   }
 
   post(route: string, ...handler: Handler[]): void {
-    this.app.post(route, ...handler);
+    this.server.post(route, ...handler);
   }
 
   put(route: string, ...handler: Handler[]): void {
-    this.app.put(route, ...handler);
+    this.server.put(route, ...handler);
   }
 
   delete(route: string, ...handler: Handler[]): void {
-    this.app.delete(route, ...handler);
+    this.server.delete(route, ...handler);
   }
 }

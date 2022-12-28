@@ -25,7 +25,7 @@ export type Response = {
   setHeader(key: string, value: string): any;
 };
 
-export type NextFunction = () => void;
+export type NextFunction = (message?:string) => void;
 
 export type Method = "get" | "post" | "put" | "delete";
 
