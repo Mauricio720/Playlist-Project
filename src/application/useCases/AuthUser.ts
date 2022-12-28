@@ -1,5 +1,4 @@
 import { Encrypt } from "infra/security/Encrypt";
-import { Identifier } from "infra/security/Identifier";
 import { UserRepository } from "application/repositories/UserRepository";
 import { AuthInvalid } from "domain/errors/AuthInvalid";
 import { Authenticator } from "infra/security/Authenticator";
@@ -17,8 +16,9 @@ export class AuthUser{
             throw new AuthInvalid();
         }
         
-        const userInvalid=this.encrypt.compare(data.password,user.password)
-        if(!userInvalid){
+        const isValidPass=await this.encrypt.compare(data.password,user.password)
+        
+        if(!isValidPass){
             throw new AuthInvalid();
         }
 

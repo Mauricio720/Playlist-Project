@@ -2,7 +2,7 @@ import { Encrypt } from "./Encrypt";
 import bcrypt from 'bcrypt'
 
 export class BcryptAdapter implements Encrypt{
-    compare(password: string, encripted: string): boolean {
+    async compare(password: string, encripted: string): Promise<boolean> {
         return bcrypt.compare(password,encripted)
     }
 
