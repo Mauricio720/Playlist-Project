@@ -36,4 +36,7 @@ export class User {
     Object.assign(this, props);
   }
 
+  delete(){
+    this.active=false;
+  }
 }

@@ -1,5 +1,6 @@
 import { UserRepository } from "application/repositories/UserRepository";
 import { CreateUser } from "application/useCases/CreateUser";
+import { DeleteUser } from "application/useCases/DeleteUser";
 import { UpdateUser } from "application/useCases/UpdateUser";
 import { User } from "domain/entities/User";
 import { Server } from "infra/http/Server";
@@ -43,7 +44,8 @@ export class UserController{
 
         this.server.delete("/user",async (req,res)=>{
             try {
-                await this.userRepository.delete(req.body.id)
+                const deleteUser=new DeleteUser(this.userRepository)
+                await deleteUser.execute(req.body.id)
                 res.end()
             } catch (err) {
                 res.status(400).json(err.message)

@@ -20,8 +20,10 @@ export class UserRepositoryMemory implements UserRepository{
         return user;
     }
 
-    async delete(id:string){
-        return this.users.find((user) => user.id === id).active=false 
+    async delete(id:string):Promise<User>{
+        const user=this.users.find((user) => user.id === id)
+        user.active=false
+        return user;
     }
 
     async findById(id: string):Promise<User | null>{
