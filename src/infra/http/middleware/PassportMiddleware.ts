@@ -17,9 +17,9 @@ export class PassportMidleware implements Middleware{
       
       passport.authenticate('jwt',(err,user)=>{
         if(!user){
-            res.status(401).send({error:'Not Authorized'})
+            return res.status(401).json("Not Authorized").end()
         }
-        next()
+        return next()
       })(req,res,next)
     }
 }
