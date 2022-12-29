@@ -37,7 +37,6 @@ describe('Song',()=>{
 
     it("should create song",()=>{
         const song=new Song(INITIAL_VALUES)
-        console.log(song);
         
         assert.deepEqual(song.id,"any")
         assert.deepEqual(song.title,"any")
