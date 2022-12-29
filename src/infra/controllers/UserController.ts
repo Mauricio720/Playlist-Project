@@ -52,7 +52,6 @@ export class UserController{
             }
         })
 
-
         this.server.get('/user',async (req,res)=>{
             try{
                 const user=await this.userRepository.findById(req.query.id)
