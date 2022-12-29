@@ -1,5 +1,6 @@
 import { UserRepository } from "application/repositories/UserRepository";
 import { CreateUser } from "application/useCases/CreateUser";
+import { UpdateUser } from "application/useCases/UpdateUser";
 import { User } from "domain/entities/User";
 import { Server } from "infra/http/Server";
 import { Authenticator } from "infra/security/Authenticator";
@@ -30,6 +31,26 @@ export class UserController{
             }
         })
 
+        this.server.put("/user",async (req,res)=>{
+            try {
+                const updateUser=new UpdateUser(this.userRepository,this.encrypt)
+                const user=await updateUser.execute(req.body as Partial<User.Props>)
+                res.json(user).end()
+            } catch (err) {
+                res.status(400).json(err.message)
+            }
+        })
+
+        this.server.delete("/user",async (req,res)=>{
+            try {
+                await this.userRepository.delete(req.body.id)
+                res.end()
+            } catch (err) {
+                res.status(400).json(err.message)
+            }
+        })
+
+
         this.server.get('/user',async (req,res)=>{
             try{
                 const user=await this.userRepository.findById(req.query.id)
@@ -44,7 +65,7 @@ export class UserController{
                 const users=await this.userRepository.list()
                 res.json(users).end()
             }catch(err){
-                res.status(400).json(err.message)
+                res.status(400).json(err.message).end()
             }
         })
         

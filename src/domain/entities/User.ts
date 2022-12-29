@@ -31,4 +31,9 @@ export class User {
       throw new FieldMissing("Name and Email");
     }
   }
+
+  update(props:Partial<User.Props>){
+    Object.assign(this, props);
+  }
+
 }

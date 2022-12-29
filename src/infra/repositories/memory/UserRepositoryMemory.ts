@@ -5,7 +5,7 @@ export class UserRepositoryMemory implements UserRepository{
     private users:User[]=[]
     
     async list():Promise<User[]>{
-        return this.users
+        return this.users.filter(userItem=>userItem.active)
     }
     
     async create(user: User):Promise<User>{
@@ -21,18 +21,15 @@ export class UserRepositoryMemory implements UserRepository{
     }
 
     async delete(id:string){
-        const filterUsers=this.users.filter((userItem)=>userItem.id!==id)
-        this.users=filterUsers;
+        return this.users.find((user) => user.id === id).active=false 
     }
 
-    async findById(id: string):Promise<User>{
-        const index=this.users.findIndex((userItem)=>userItem.id===id)
-        return this.users[index]
+    async findById(id: string):Promise<User | null>{
+        return this.users.find((user) => user.id === id) || null;
     }
 
-    async findByEmail(email: string):Promise<User>{
-        const index=this.users.findIndex((userItem)=>userItem.email===email)
-        return this.users[index]
+    async findByEmail(email: string):Promise<User | null>{
+        return this.users.find((user) => user.email === email) || null;
     }
 
 }
