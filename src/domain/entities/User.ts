@@ -9,7 +9,7 @@ export namespace User {
     email: string;
     password?: string;
     dateRegister?: Date;
-    favoriteCategory?: Category[];
+    favoriteCategory?: Category.Props[];
     favoriteArtist?: Artist[];
   }
 }

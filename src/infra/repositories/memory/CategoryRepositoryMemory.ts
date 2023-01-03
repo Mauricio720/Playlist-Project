@@ -25,4 +25,8 @@ export class CategoryRepositoryMemory implements CategogyRepository{
         this.categories=filterCategories;
     }
 
+    async findById(id: string):Promise<Category | null>{
+        return this.categories.find((category) => category.id === id) || null;
+    }
+
 }

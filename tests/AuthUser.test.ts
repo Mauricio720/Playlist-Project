@@ -6,6 +6,7 @@ import { UserRepositoryMemory } from "infra/repositories/memory/UserRepositoryMe
 import { Authenticator } from 'infra/security/Authenticator'
 import { AuthUser } from "application/useCases/AuthUser";
 import { AuthInvalid } from "domain/errors/AuthInvalid";
+import { Category } from "domain/entities/Category";
 
 describe('Auth User',async ()=>{
     const userRepository=new UserRepositoryMemory()
@@ -38,8 +39,8 @@ describe('Auth User',async ()=>{
         email: "any@any.com",
         password: "any",
         favoriteCategory: [
-            { id: "any", name: "rock" },
-            { id: "any", name: "rap" },
+            { id: "any", name: "rock" } as Category,
+            { id: "any", name: "rap" } as Category,
           ],
         favoriteArtist: [{ id: "any", name: "any" }],
     })

@@ -13,16 +13,15 @@ export class UpdateUser{
     async execute(data:Partial<User.Props>):Promise<User>{
         const user=await this.userRepository.findById(data.id)
         
-        if(!user){
+        if(user === undefined){
             throw new UserNotFound()
         }
 
-        const userAlreadyExist=await this.userRepository.findByEmail(user.email)
-        if (userAlreadyExist && user.id !== userAlreadyExist.id) {
-            throw new UserExists();
-        }
+       if(await this.verifyUserExists(user) === true){
+            throw new UserExists()
+       }
 
-        if(data.password){
+        if(data.password !== undefined){
             data.password=this.encrypt.encript(data.password)
         }
 
@@ -30,5 +29,10 @@ export class UpdateUser{
         await this.userRepository.update(user)
         
         return user;
+    }
+
+    private async verifyUserExists(user:User){
+        const userAlreadyExist=await this.userRepository.findByEmail(user.email)
+        return (userAlreadyExist && user.id !== userAlreadyExist.id)
     }
 }

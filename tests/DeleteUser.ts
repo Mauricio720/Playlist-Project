@@ -7,6 +7,7 @@ import assert from "assert";
 import { UserNotFound } from "domain/errors/UserNotFound";
 import { UpdateUser } from "application/useCases/UpdateUser";
 import { DeleteUser } from "application/useCases/DeleteUser";
+import { Category } from "domain/entities/Category";
 
 describe("Delete User",async ()=>{
     const userRepository=new UserRepositoryMemory()
@@ -39,8 +40,8 @@ describe("Delete User",async ()=>{
         email: "any@any.com",
         password: "any",
         favoriteCategory: [
-            { id: "any", name: "rock" },
-            { id: "any", name: "rap" },
+            { id: "any", name: "rock" } as Category,
+            { id: "any", name: "rap" } as Category,
             ],
         favoriteArtist: [{ id: "any", name: "any" }],
     })

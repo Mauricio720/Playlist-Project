@@ -5,5 +5,6 @@ export interface CategogyRepository{
     create(category:Category):Promise<Category>;
     update(category:Category):Promise<Category>;
     delete(id:string):Promise<void>;
+    findById(id:string):Promise<Category>;
 }
 

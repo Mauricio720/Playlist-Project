@@ -14,11 +14,7 @@ describe("Create New Category",()=>{
     it("should create new category",async ()=>{
         const categoryRepository=new CategoryRepositoryMemory()
         const createCategory=new CreateCategory(identifier,categoryRepository)
-        const category=await createCategory.execute({
-            id:identifier.createId(),
-            name:'any',
-            icon:'any'
-        })
+        const category=await createCategory.execute('any','any')
         
         assert.deepEqual(category.id,'1')
         assert.deepEqual(category.name,'any')

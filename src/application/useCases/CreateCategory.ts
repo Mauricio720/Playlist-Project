@@ -8,9 +8,8 @@ export class CreateCategory{
         private readonly categoryRepository:CategogyRepository
     ){}
 
-    async execute(data:Category):Promise<Category>{
-        const category=new Category({...data,id:this.identifier.createId()})
-        
+    async execute(name:string, file?:string):Promise<Category>{
+        const category=new Category({id:this.identifier.createId(),name,icon:file} as Category)
         await this.categoryRepository.create(category)
         
         return category;

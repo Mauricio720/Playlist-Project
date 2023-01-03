@@ -9,6 +9,7 @@ export class PassportMidleware implements Middleware{
       const allowsRoute = [
         "/auth",
         "/user",
+        "/all_categories",
         "/category",
       ];
       
