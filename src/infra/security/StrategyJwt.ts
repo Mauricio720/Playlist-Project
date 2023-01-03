@@ -3,7 +3,6 @@ import { ExtractJwt, Strategy as JWTStrategy } from "passport-jwt";
 import { Strategy } from "./Strategy";
 import * as dotenv from "dotenv";
 import passport from "passport";
-import { NotAuthorized } from "domain/errors/NotAuthorized";
 
 export class StrategyJwt implements Strategy{
     constructor(
@@ -20,11 +19,9 @@ export class StrategyJwt implements Strategy{
         
         passport.use(new JWTStrategy(options,async (payload,done)=>{
             const user=await this.userRepository.findById(payload.id)
-            
             if(user){
                 return done(null,user)
             }
-
             return done(null,false);
         }));
 
@@ -32,6 +29,4 @@ export class StrategyJwt implements Strategy{
             done(null, user);
         })
     }
-
-    
 }

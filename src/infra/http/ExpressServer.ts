@@ -6,7 +6,7 @@ export class ExpressServer implements Server {
   private server: Express = express();
 
   constructor() {
-    this.server.use(express.json());
+    this.server.use(express.json({limit:"50mb"}));
   }
 
   registerMiddleware(handler: Handler): void {
@@ -25,8 +25,8 @@ export class ExpressServer implements Server {
     this.server.get(route, ...handler);
   }
 
-  post(route: string, ...handler: Handler[]): void {
-    this.server.post(route, ...handler);
+  post(route: string, ...handlers: Handler[]): void {
+    this.server.post(route, ...handlers);
   }
 
   put(route: string, ...handler: Handler[]): void {

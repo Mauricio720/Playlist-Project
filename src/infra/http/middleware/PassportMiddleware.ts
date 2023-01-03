@@ -1,4 +1,3 @@
-import { NotAuthorized } from "domain/errors/NotAuthorized";
 import { Strategy } from "infra/security/Strategy";
 import passport from "passport";
 import { Middleware, NextFunction, Request, Response } from "./Middleware";
@@ -10,6 +9,7 @@ export class PassportMidleware implements Middleware{
       const allowsRoute = [
         "/auth",
         "/user",
+        "/category",
       ];
       
       if (allowsRoute.some((route) => req.url.includes(route))) return next();
