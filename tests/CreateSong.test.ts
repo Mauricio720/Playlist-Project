@@ -1,14 +1,22 @@
+import { CreateSong } from "application/useCases/CreateSong"
 import assert from "assert"
 import { Song } from "domain/entities/Song"
-import { FieldMissing } from "domain/errors/FieldMissing"
+import { SongRepositoryMemory } from "infra/repositories/memory/SongRepositoryMemory"
+import { Identifier } from "infra/security/Identifier"
 
-describe('Song',()=>{
-    const INITIAL_VALUES:Song.Props={
-        id:"any",
+describe("Create Song",()=>{
+    const identifier:Identifier={
+        createId(){
+            return "1"
+        }
+    }
+
+    const INITIAL_VALUE:Song.Props={
+        id:identifier.createId(),
         title:"any",
         category:{
             id:"any",
-            name:"any",
+            name:"any"
         },
         duration:1.0,
         pathSongFile:"any",
@@ -35,14 +43,18 @@ describe('Song',()=>{
         }
     }
 
-    it("should create song",()=>{
-        const song=new Song(INITIAL_VALUES)
+    const songRepository=new SongRepositoryMemory()
+
+    it("should create new song",async ()=>{
+        const createSong=new CreateSong(songRepository,identifier)
+        const song=await createSong.execute(INITIAL_VALUE,"any")
+        console.log(song);
         
-        assert.deepEqual(song.id,"any")
+        assert.deepEqual(song.id,"1")
         assert.deepEqual(song.title,"any")
         assert.deepEqual(song.category.id,"any")
         assert.deepEqual(song.category.name,"any")
-        assert.deepEqual(song.duration,1.0)
+        assert.deepEqual(song.duration,1)
         assert.deepEqual(song.pathSongFile,`${process.env.URI_BACKEND}any`)
         assert.deepEqual(song.artist.id,"any")
         assert.deepEqual(song.artist.name,"any")
@@ -63,18 +75,4 @@ describe('Song',()=>{
         assert.deepEqual(song.user.name,"any")
         assert.deepEqual(song.user.email,"any@any.com")
     })
-
-    it("throw error missing attributes songs",async ()=>{
-        assert.throws(() => {
-            new Song({...INITIAL_VALUES,
-                title:"",
-                category:null,
-                duration:1.0,
-                pathSongFile:"",
-                artist:null,
-                album:null,
-                user:null
-            })
-        }, new FieldMissing("Title or Category or Duration or PathSongFile or Artist or Album or User"));
-    });
 })
