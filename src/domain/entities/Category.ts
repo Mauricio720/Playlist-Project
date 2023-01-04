@@ -30,7 +30,7 @@ export class Category {
 
   private setUrlIcon(){
     if(this.icon){
-      this.urlIcon=`${process.env.URI_BACKEND}/${this.icon}`;
+      this.urlIcon=`${process.env.URI_BACKEND}${this.icon}`;
     }
   }
 }
