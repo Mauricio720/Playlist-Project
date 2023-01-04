@@ -13,7 +13,6 @@ export namespace Song{
         pathSongFile:string;
         artist:Artist;
         album:Album;
-        dateRegister:Date;
         user:User.Props;
     }
 }
@@ -28,15 +27,21 @@ export class Song{
     public album:Album;
     public dateRegister:Date;
     public user:User;
+    public public=false;
 
     constructor(props:Song.Props){
         Object.assign(this,props)
-        
+        this.dateRegister=new Date()
+        this.pathSongFile=`${process.env.URI_BACKEND}${this.pathSongFile}`
         this.missingInputs()
     }
 
+    changePublic(){
+        this.public=!this.public;
+    }
+
     private missingInputs(){
-        if(!this.title || !this.category || !this.duration || !this.pathSongFile || !this.artist || !this.album || !this.user){
+        if(!this.title || !this.category || !this.duration || !this.artist || !this.album || !this.user){
             throw new FieldMissing("Title or Category or Duration or PathSongFile or Artist or Album or User")
         }
     }

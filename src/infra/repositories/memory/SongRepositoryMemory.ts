@@ -23,4 +23,8 @@ export class SongRepositoryMemory implements SongRepository{
     async delete(id: string): Promise<void> {
         this.songs.filter((songItem)=>songItem.id!==id)
     }
+
+    async findById(id: string) : Promise<Song>{
+        return this.songs.find((song) => song.id === id) || null;
+    }
 }
