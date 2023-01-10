@@ -1,6 +1,6 @@
 import { UserRepository } from "application/repositories/UserRepository";
 import { User } from "domain/entities/User";
-import { UserNotFound } from "domain/errors/UserNotFound";
+import { ObjectNotFound } from "domain/errors/ObjectNotFound";
 
 export class DeleteUser{
     constructor(private readonly userRepository:UserRepository){}
@@ -8,7 +8,7 @@ export class DeleteUser{
     async execute(id:string):Promise<User>{
         const user=await this.userRepository.findById(id);
         if(!user){
-            throw new UserNotFound()
+            throw new ObjectNotFound("User")
         }
         
         user.delete()

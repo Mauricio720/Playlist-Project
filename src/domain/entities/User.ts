@@ -10,7 +10,7 @@ export namespace User {
     password?: string;
     dateRegister?: Date;
     favoriteCategory?: Category.Props[];
-    favoriteArtist?: Artist[];
+    favoriteArtist?: Artist.Props[];
   }
 }
 

@@ -1,7 +1,7 @@
 import { UserRepository } from "application/repositories/UserRepository";
 import { User } from "domain/entities/User";
+import { ObjectNotFound } from "domain/errors/ObjectNotFound";
 import { UserExists } from "domain/errors/UserExists";
-import { UserNotFound } from "domain/errors/UserNotFound";
 import { Encrypt } from "infra/security/Encrypt";
 
 export class UpdateUser{
@@ -13,8 +13,8 @@ export class UpdateUser{
     async execute(data:Partial<User.Props>):Promise<User>{
         const user=await this.userRepository.findById(data.id)
         
-        if(user === undefined){
-            throw new UserNotFound()
+        if(!user){
+            throw new ObjectNotFound("User")
         }
 
        if(await this.verifyUserExists(user) === true){
