@@ -1,7 +1,8 @@
+import { AlbumRepository } from "application/repositories/AlbumRepository";
+import { ArtistRepository } from "application/repositories/ArtistRepository";
 import { SongRepository } from "application/repositories/SongRepository";
 import { ChangePublicSong } from "application/useCases/ChangePublicSong";
 import { CreateSong } from "application/useCases/CreateSong";
-import { Song } from "domain/entities/Song";
 import { Server } from "infra/http/Server";
 import { Identifier } from "infra/security/Identifier";
 import { Storage } from "infra/storage/Storage";
@@ -10,17 +11,32 @@ export class SongController{
     constructor(
         private readonly server:Server,
         private readonly songRepository:SongRepository,
+        private readonly artistRepository:ArtistRepository,
+        private readonly albumRepository:AlbumRepository,
         private readonly identifier:Identifier,
         private readonly storage:Storage,
     ){
 
         this.server.post(
             '/song',
-            this.storage.middleware({ key: "file", path: "/songs" }),
+            this.storage.middlewareMultiple(
+                [
+                    { name: "songFile", path: "/songs" },
+                    { name: "albumImage", path: "/songs/album" }
+                ]
+            ),
             async (req,res)=>{
             try{
-                const createSong=new CreateSong(this.songRepository,this.identifier)
-                const song=await createSong.execute(JSON.parse(req.body.song),req.file.location)
+                const createSong=new CreateSong(
+                    this.songRepository,
+                    this.artistRepository,
+                    this.albumRepository,
+                    this.identifier
+                )
+                const song=await createSong.execute(
+                    JSON.parse(req.body.song),
+                    req.files.songFile.location
+                )
                 res.json(song).end()
             }catch(err){
                 res.status(400).json(err.message).end()

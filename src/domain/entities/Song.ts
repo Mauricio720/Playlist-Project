@@ -3,6 +3,8 @@ import { Album } from "./Album";
 import { Artist } from "./Artist";
 import { Category } from "./Category";
 import { User } from "./User";
+import "dotenv/config";
+
 
 export namespace Song{
     export interface Props{
@@ -11,8 +13,8 @@ export namespace Song{
         category:Category.Props;
         duration:number;
         pathSongFile:string;
-        artist:Artist;
-        album:Album;
+        artist:Artist.Props;
+        album:Album.Props;
         user:User.Props;
     }
 }
@@ -31,9 +33,9 @@ export class Song{
 
     constructor(props:Song.Props){
         Object.assign(this,props)
+        this.missingInputs()
         this.dateRegister=new Date()
         this.pathSongFile=`${process.env.URI_BACKEND}${this.pathSongFile}`
-        this.missingInputs()
     }
 
     changePublic(){
