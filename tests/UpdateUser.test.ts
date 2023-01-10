@@ -7,7 +7,7 @@ import { User } from "domain/entities/User";
 import assert from "assert";
 import { UpdateUser } from "application/useCases/UpdateUser";
 import { UserExists } from "domain/errors/UserExists";
-import { UserNotFound } from "domain/errors/UserNotFound";
+import { ObjectNotFound } from "domain/errors/ObjectNotFound";
 
 describe("Update User",async ()=>{
     const userRepository=new UserRepositoryMemory()
@@ -89,7 +89,7 @@ describe("Update User",async ()=>{
               ],
             favoriteArtist: [{ id: "any", name: "any" },{ id: "any", name: "any2" }]
         })
-            }, new UserNotFound());
+            }, new ObjectNotFound("User"));
     })
 
     it("throw error user already exists",async ()=>{
