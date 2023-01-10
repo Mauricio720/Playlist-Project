@@ -14,7 +14,7 @@ describe("Update Category",async ()=>{
     }
 
     const categoryRepository=new CategoryRepositoryMemory()
-    const storage:Omit<Storage,"middleware">={
+    const storage:Partial<Storage>={
         async deleteFile(){}
     }
     const createCategory=new CreateCategory(identifier,categoryRepository)
