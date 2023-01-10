@@ -1,10 +1,12 @@
+import "dotenv/config";
 import { CreateAlbum } from "application/useCases/CreateAlbum";
 import assert from "assert";
 import { Album } from "domain/entities/Album";
-import { Artist } from "domain/entities/Artist";
 import { AlbumRepositoryMemory } from "infra/repositories/memory/AlbumRepositoryMemory";
 import { ArtistRepositoryMemory } from "infra/repositories/memory/ArtistRepositoryMemory";
 import { Identifier } from "infra/security/Identifier";
+
+
 
 describe("Create Album",async ()=>{
     const INITIAL_VALUE:Album.Props={
@@ -29,10 +31,12 @@ describe("Create Album",async ()=>{
     
     it("should create album",async ()=>{
         const createAlbum=new CreateAlbum(albumRepository,artistRepository,identifier)
-        const album=await createAlbum.execute(INITIAL_VALUE)
-
+        const album=await createAlbum.execute(INITIAL_VALUE,'any')
+        
+        
         assert.deepEqual(album.id,"1")
         assert.deepEqual(album.name,"any")
+        assert.deepEqual(album.cover,`${process.env.URI_BACKEND}any`)
         assert.deepEqual(album.artist,{
             id:"any",
             name:"any"
