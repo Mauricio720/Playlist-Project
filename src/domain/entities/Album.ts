@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { FieldMissing } from "domain/errors/FieldMissing";
 import { Artist } from "./Artist";
 
@@ -6,7 +7,7 @@ export namespace Album{
         readonly id:string;
         name:string;
         year:string;
-        artist:Artist;
+        artist:Artist.Props;
         cover?:string;
     }
 }
@@ -15,8 +16,8 @@ export class Album{
     public readonly id:string;
     public name:string;
     public year:string;
-    public artist:Artist;
-    public cover:string;
+    public artist:Artist.Props;
+    public cover="";
 
     constructor(props:Album.Props){
         Object.assign(this,props);
@@ -24,5 +25,6 @@ export class Album{
             throw new FieldMissing("Name and Year and Artist")
         }
 
+        this.cover=`${process.env.URI_BACKEND}${this.cover}`
     }
 }
