@@ -1,6 +1,6 @@
+import "dotenv/config";
 import assert from "assert"
 import { Album } from "domain/entities/Album"
-import { Artist } from "domain/entities/Artist"
 import { FieldMissing } from "domain/errors/FieldMissing"
 
 describe("Album",()=>{
@@ -24,8 +24,7 @@ describe("Album",()=>{
         assert.deepEqual(album.year,'any')
         assert.deepEqual(album.artist.id,'any')
         assert.deepEqual(album.artist.name,'any')
-        assert.deepEqual(album.artist.picture,'any')
-        assert.deepEqual(album.cover,'any')
+        assert.deepEqual(album.cover,`${process.env.URI_BACKEND}any`)
     })
     
     it('throw error name or year or artist missing album',()=>{

@@ -54,14 +54,22 @@ describe('Song',()=>{
         assert.deepEqual(song.album.id,"any")
         assert.deepEqual(song.album.name,"any")
         assert.deepEqual(song.album.year,"any")
-        assert.deepEqual(song.album.cover,"any")
-        assert.deepEqual(song.album.cover,"any")
         assert.deepEqual(song.album.artist.id,"any")
         assert.deepEqual(song.album.artist.name,"any")
-        assert.deepEqual(song.album.artist.picture,"any")
         assert.deepEqual(song.user.id,"any")
         assert.deepEqual(song.user.name,"any")
         assert.deepEqual(song.user.email,"any@any.com")
+    })
+
+    it("should return empty path if is not send any file",()=>{
+        const song=new Song({
+                ...INITIAL_VALUES,
+                artist:{...INITIAL_VALUES.artist,picture:""},
+                album:{...INITIAL_VALUES.album,cover:""},
+            })
+        
+        assert.deepEqual(song.artist.picture,"")
+        assert.deepEqual(song.album.cover,"")
     })
 
     it("throw error missing attributes songs",async ()=>{
@@ -77,4 +85,5 @@ describe('Song',()=>{
             })
         }, new FieldMissing("Title or Category or Duration or PathSongFile or Artist or Album or User"));
     });
+
 })

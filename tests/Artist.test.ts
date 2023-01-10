@@ -1,3 +1,4 @@
+import "dotenv/config";
 import assert from "assert";
 import { Artist } from "domain/entities/Artist";
 import { FieldMissing } from "domain/errors/FieldMissing";
@@ -8,7 +9,7 @@ describe("Artist", () => {
         
         assert.deepEqual(artist.id, "any");
         assert.deepEqual(artist.name, "any");
-        assert.deepEqual(artist.picture, "any");
+        assert.deepEqual(artist.picture, `${process.env.URI_BACKEND}any`);
     });
 
     it("throw error name missing artist", () => {
