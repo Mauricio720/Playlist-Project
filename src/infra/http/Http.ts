@@ -3,6 +3,9 @@ export type Request = {
   file?: {
     [key: string]: any;
   };
+  files?: {
+    [key: string]: any;
+  };
   body: {
     [key: string]: any;
   };

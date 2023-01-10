@@ -1,6 +1,6 @@
-import { ExpressServer } from "infra/http/ExpressServer";
-import * as dotenv from "dotenv";
+import "dotenv/config";
 import cors from "cors"
+import { ExpressServer } from "infra/http/ExpressServer";
 import { UserRepositoryMemory } from "infra/repositories/memory/UserRepositoryMemory";
 import { BcryptAdapter } from "infra/security/BcryptAdapter";
 import { CryptoIdentifier } from "infra/security/CryptoIdentifier";
@@ -15,8 +15,9 @@ import { SongRepositoryMemory } from "infra/repositories/memory/SongRepositoryMe
 import { CategoryController } from "infra/controllers/CategoryController";
 import { CategoryRepositoryMemory } from "infra/repositories/memory/CategoryRepositoryMemory";
 import { LocalStorageAdapter } from "infra/storage/LocalStorageAdapter";
-
-dotenv.config();
+import { AlbumRepositoryMemory } from "infra/repositories/memory/AlbumRepositoryMemory";
+import { ArtistRepositoryMemory } from "infra/repositories/memory/ArtistRepositoryMemory";
+import { AlbumController } from "infra/controllers/AlbumController";
 
 const server = new ExpressServer();
 server.static("public");
@@ -40,11 +41,14 @@ const storage=new LocalStorageAdapter();
 
 const songRepository=new SongRepositoryMemory()
 const categoryRepository=new CategoryRepositoryMemory()
+const artistRepository=new ArtistRepositoryMemory();
+const albumRepository=new AlbumRepositoryMemory();
 
 new UserController(server,userRepository,identifier,encript,jsonWebTokenAdapter)
 new AuthController(server,userRepository,jsonWebTokenAdapter,encript)
-new SongController(server,songRepository,identifier)
+new SongController(server,songRepository,artistRepository,albumRepository,identifier,storage)
 new CategoryController(server,categoryRepository,identifier,storage)
+new AlbumController(server,albumRepository,artistRepository,identifier,storage)
 
 server.listen(parseInt(process.env.PORT as string), () =>
   console.log(`Server listening on port ${process.env.PORT}`)
