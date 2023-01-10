@@ -6,7 +6,7 @@ import { Storage } from "infra/storage/Storage";
 export class UpdateCategory{
     constructor(
         private readonly categoryRepository:CategogyRepository,
-        private readonly storage:Omit<Storage,"middleware">
+        private readonly storage:Partial<Storage>
     ){}
 
     async execute(id:string,name:string, file?:string):Promise<Category>{
