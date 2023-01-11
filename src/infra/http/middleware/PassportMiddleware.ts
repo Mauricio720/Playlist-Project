@@ -9,7 +9,8 @@ export class PassportMidleware implements Middleware{
       const allowsRoute = [
         "/auth",
         "/user",
-        "/album"
+        "/album",
+        "/song",
       ];
       
       if (allowsRoute.some((route) => req.url.includes(route))) return next();
