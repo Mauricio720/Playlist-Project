@@ -7,7 +7,7 @@ export namespace Album{
         readonly id:string;
         name:string;
         year:string;
-        artist:Artist.Props;
+        artist?:Artist.Props;
         cover?:string;
     }
 }
@@ -25,6 +25,8 @@ export class Album{
             throw new FieldMissing("Name and Year and Artist")
         }
 
-        this.cover=`${process.env.URI_BACKEND}${this.cover}`
+        if(this.cover){
+            this.cover=`${process.env.URI_BACKEND}${this.cover}`    
+        }
     }
 }

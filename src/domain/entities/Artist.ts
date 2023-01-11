@@ -21,7 +21,7 @@ export class Artist {
       throw new FieldMissing("Name");
     }
 
-    if(this.picture!==''){
+    if(this.picture){
       this.picture=`${process.env.URI_BACKEND}${this.picture}`
     }
     

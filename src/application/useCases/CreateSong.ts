@@ -3,8 +3,9 @@ import { ArtistRepository } from "application/repositories/ArtistRepository";
 import { SongRepository } from "application/repositories/SongRepository";
 import { Album } from "domain/entities/Album";
 import { Artist } from "domain/entities/Artist";
+import { Category } from "domain/entities/Category";
 import { Song } from "domain/entities/Song";
-import { ObjectNotFound } from "domain/errors/ObjectNotFound";
+import { User } from "domain/entities/User";
 import { Identifier } from "infra/security/Identifier";
 
 export class CreateSong{
@@ -15,17 +16,34 @@ export class CreateSong{
         private readonly identifier:Identifier,
     ){}
 
-    async execute(data:Omit<Song.Props,'id'>,songFile:string){
+    async execute(
+        data:CreateSongDTO,
+        songFile:string,
+        artistFile?:string,
+        albumFile?:string){
+        
         const newId=this.identifier.createId()
         
         if(!data.artist.id){
-            const artist=new Artist({...data.artist,id:this.identifier.createId()})
+            const artist=new Artist({
+                ...data.artist
+                ,id:this.identifier.createId(),
+                picture:artistFile
+            })
+            
+            await this.artistRepository.create(artist);
+            
             data.artist=artist;
             data.album.artist=artist;
         }
 
         if(!data.album.id){
-            const album=new Album({...data.album,id:this.identifier.createId()})
+            const album=new Album({
+                ...data.album,
+                id:this.identifier.createId(),
+                cover:albumFile
+            })
+            await this.albumRepository.create(album)
             data.album=album;
         }
 
@@ -35,4 +53,13 @@ export class CreateSong{
         
         return await this.songRepository.create(song)
     }
+}
+
+export type CreateSongDTO={
+    title:string,
+    category:Omit<Category.Props,'cover'>,
+    duration:number,
+    artist:Artist.Props,
+    album:Album.Props,
+    user:User.Props
 }

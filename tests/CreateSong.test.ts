@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { CreateSong } from "application/useCases/CreateSong"
+import { CreateSong, CreateSongDTO } from "application/useCases/CreateSong"
 import assert from "assert"
 import { Artist } from "domain/entities/Artist"
 import { Song } from "domain/entities/Song"
@@ -17,27 +17,23 @@ describe("Create Song",async ()=>{
         }
     }
 
-    const INITIAL_VALUE:Song.Props={
-        id:identifier.createId(),
+    const INITIAL_VALUE:CreateSongDTO={
         title:"any",
         category:{
             id:"any",
             name:"any"
         },
         duration:1.0,
-        pathSongFile:"any",
         artist:{
             id:"any",
             name:"any",
+            picture:"any"
         },
         album:{
             id:"any",
             name:"any",
             year:"any",
-            artist:{
-                id:"any",
-                name:"any",
-            }
+            cover:"any"
         },
         user:{
             id:"any",
@@ -62,7 +58,6 @@ describe("Create Song",async ()=>{
 
     it("should create new song",async ()=>{
         const song=await createSong.execute(INITIAL_VALUE,"any")
-        console.log(song);
         
         assert.deepEqual(song.id,"1")
         assert.deepEqual(song.title,"any")
@@ -72,6 +67,7 @@ describe("Create Song",async ()=>{
         assert.deepEqual(song.pathSongFile,`${process.env.URI_BACKEND}any`)
         assert.deepEqual(song.artist.id,"any")
         assert.deepEqual(song.artist.name,"any")
+        assert.deepEqual(song.artist.picture,"any")
         assert.deepEqual(
             new Date(song.dateRegister).toDateString(),
             new Date().toDateString()
@@ -79,9 +75,7 @@ describe("Create Song",async ()=>{
         assert.deepEqual(song.album.id,"any")
         assert.deepEqual(song.album.name,"any")
         assert.deepEqual(song.album.year,"any")
-        
-        assert.deepEqual(song.album.artist.id,"any")
-        assert.deepEqual(song.album.artist.name,"any")
+        assert.deepEqual(song.album.cover,"any")
         assert.deepEqual(song.user.id,"any")
         assert.deepEqual(song.user.name,"any")
         assert.deepEqual(song.user.email,"any@any.com")
@@ -107,7 +101,6 @@ describe("Create Song",async ()=>{
             "any",
         )
            
-            
         assert.deepEqual(song.album.id,"1")
     })
     
