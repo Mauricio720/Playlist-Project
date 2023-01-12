@@ -2,7 +2,6 @@ import "dotenv/config";
 import { CreateSong, CreateSongDTO } from "application/useCases/CreateSong"
 import assert from "assert"
 import { Artist } from "domain/entities/Artist"
-import { Song } from "domain/entities/Song"
 import { ObjectNotFound } from "domain/errors/ObjectNotFound"
 import { AlbumRepositoryMemory } from "infra/repositories/memory/AlbumRepositoryMemory"
 import { ArtistRepositoryMemory } from "infra/repositories/memory/ArtistRepositoryMemory"
