@@ -18,6 +18,8 @@ import { LocalStorageAdapter } from "infra/storage/LocalStorageAdapter";
 import { AlbumRepositoryMemory } from "infra/repositories/memory/AlbumRepositoryMemory";
 import { ArtistRepositoryMemory } from "infra/repositories/memory/ArtistRepositoryMemory";
 import { AlbumController } from "infra/controllers/AlbumController";
+import { PlaylistRepositoryMemory } from "infra/repositories/memory/PlaylistRepository";
+import { PlaylistController } from "infra/controllers/PlaylistController";
 
 const server = new ExpressServer();
 server.static("public");
@@ -43,12 +45,14 @@ const songRepository=new SongRepositoryMemory()
 const categoryRepository=new CategoryRepositoryMemory()
 const artistRepository=new ArtistRepositoryMemory();
 const albumRepository=new AlbumRepositoryMemory();
+const playlistRepository=new PlaylistRepositoryMemory();
 
 new UserController(server,userRepository,identifier,encript,jsonWebTokenAdapter)
 new AuthController(server,userRepository,jsonWebTokenAdapter,encript)
 new SongController(server,songRepository,artistRepository,albumRepository,identifier,storage)
 new CategoryController(server,categoryRepository,identifier,storage)
 new AlbumController(server,albumRepository,artistRepository,identifier,storage)
+new PlaylistController(server,playlistRepository,songRepository,identifier)
 
 server.listen(parseInt(process.env.PORT as string), () =>
   console.log(`Server listening on port ${process.env.PORT}`)

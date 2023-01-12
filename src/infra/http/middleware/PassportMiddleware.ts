@@ -11,6 +11,7 @@ export class PassportMidleware implements Middleware{
         "/user",
         "/album",
         "/song",
+        "/playlist",
       ];
       
       if (allowsRoute.some((route) => req.url.includes(route))) return next();
