@@ -39,6 +39,9 @@ export class Playlist{
         }
         
         this.date=new Date();
-        
+    }
+
+    addSong(song:Song){
+        this.songs.push(song);
     }
 }
