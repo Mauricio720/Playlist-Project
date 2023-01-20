@@ -22,11 +22,6 @@ describe('Song',()=>{
             name:"any",
             year:"any",
             cover:"any",
-            artist:{
-                id:"any",
-                name:"any",
-                picture:"any"
-            }
         },
         user:{
             id:"any",
@@ -54,8 +49,6 @@ describe('Song',()=>{
         assert.deepEqual(song.album.id,"any")
         assert.deepEqual(song.album.name,"any")
         assert.deepEqual(song.album.year,"any")
-        assert.deepEqual(song.album.artist.id,"any")
-        assert.deepEqual(song.album.artist.name,"any")
         assert.deepEqual(song.user.id,"any")
         assert.deepEqual(song.user.name,"any")
         assert.deepEqual(song.user.email,"any@any.com")
