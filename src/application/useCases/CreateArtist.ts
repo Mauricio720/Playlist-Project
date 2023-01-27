@@ -9,8 +9,15 @@ export class CreateArtist {
     private readonly artistRepository: ArtistRepository
   ) {}
 
-  async execute(data: Omit<Artist.Props, "id">): Promise<Artist> {
-    const artist = new Artist({ ...data, id: this.identifier.createId() });
+  async execute(
+    data: Omit<Artist.Props, "id">,
+    file?: string
+  ): Promise<Artist> {
+    const artist = new Artist({
+      ...data,
+      id: this.identifier.createId(),
+      picture: file,
+    });
     const artistAlreadyExists = await this.artistRepository.findByName(
       artist.name
     );
