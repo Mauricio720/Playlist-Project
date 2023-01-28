@@ -35,6 +35,6 @@ export class PlaylistRepositoryDatabase implements PlaylistRepository {
       return null;
     }
 
-    return playlist[0];
+    return new Playlist(playlist[0]);
   }
 }

@@ -8,10 +8,11 @@ export class UserRepositoryDatabase implements UserRepository {
   }
 
   async list(): Promise<User[]> {
-    const response = await this.connection.get({});
+    const response = await this.connection.get({ active: true });
     const users = [];
 
     for (const user of response) {
+      delete user.password;
       users.push(new User(user));
     }
 
@@ -43,7 +44,7 @@ export class UserRepositoryDatabase implements UserRepository {
       return null;
     }
 
-    return users[0];
+    return new User(users[0]);
   }
 
   async findByEmail(email: string): Promise<User | null> {
@@ -56,6 +57,6 @@ export class UserRepositoryDatabase implements UserRepository {
       return null;
     }
 
-    return users[0];
+    return new User(users[0]);
   }
 }

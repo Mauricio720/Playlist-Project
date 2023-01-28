@@ -29,7 +29,7 @@ export class CategoryRepositoryDatabase implements CategogyRepository {
   }
 
   async delete(id: string): Promise<void> {
-    await this.connection.delete(id);
+    await this.connection.delete({ id });
   }
 
   async findById(id: string): Promise<Category | null> {
@@ -41,7 +41,7 @@ export class CategoryRepositoryDatabase implements CategogyRepository {
       return null;
     }
 
-    return categories[0];
+    return new Category(categories[0]);
   }
 
   async findByName(name: string): Promise<Category | null> {
@@ -53,6 +53,6 @@ export class CategoryRepositoryDatabase implements CategogyRepository {
       return null;
     }
 
-    return categories[0];
+    return new Category(categories[0]);
   }
 }

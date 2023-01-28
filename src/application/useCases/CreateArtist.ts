@@ -13,6 +13,7 @@ export class CreateArtist {
     data: Omit<Artist.Props, "id">,
     file?: string
   ): Promise<Artist> {
+    
     const artist = new Artist({
       ...data,
       id: this.identifier.createId(),

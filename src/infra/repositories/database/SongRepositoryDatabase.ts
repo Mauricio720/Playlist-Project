@@ -39,6 +39,6 @@ export class SongRepositoryDatabase implements SongRepository {
       return null;
     }
 
-    return songs[0];
+    return new Song(songs[0]);
   }
 }

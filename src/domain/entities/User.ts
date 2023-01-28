@@ -32,11 +32,11 @@ export class User {
     }
   }
 
-  update(props:Partial<User.Props>){
+  update(props: Partial<User.Props>) {
     Object.assign(this, props);
   }
 
-  delete(){
-    this.active=false;
+  delete() {
+    this.active = false;
   }
 }

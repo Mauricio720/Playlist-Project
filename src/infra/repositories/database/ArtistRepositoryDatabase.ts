@@ -41,7 +41,7 @@ export class ArtistRepositoryDatabase implements ArtistRepository {
       return null;
     }
 
-    return artist[0];
+    return new Artist(artist[0]);
   }
 
   async findByName(name: string): Promise<Artist> {
@@ -53,6 +53,6 @@ export class ArtistRepositoryDatabase implements ArtistRepository {
       return null;
     }
 
-    return artist[0];
+    return new Artist(artist[0]);
   }
 }
