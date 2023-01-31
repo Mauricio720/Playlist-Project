@@ -28,8 +28,9 @@ export class CategoryRepositoryDatabase implements CategogyRepository {
     return category;
   }
 
-  async delete(id: string): Promise<void> {
-    await this.connection.delete({ id });
+  async delete(id: string): Promise<Category> {
+    await this.connection.update({ id }, { active: false });
+    return await this.findById(id);
   }
 
   async findById(id: string): Promise<Category | null> {

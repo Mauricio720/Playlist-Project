@@ -29,8 +29,9 @@ export class SongRepositoryDatabase implements SongRepository {
     return song;
   }
 
-  async delete(id: string): Promise<void> {
-    await this.connection.delete(id);
+  async delete(id: string): Promise<Song> {
+    await this.connection.update({ id }, { active: false });
+    return await this.findById(id);
   }
 
   async findById(id: string): Promise<Song | null> {
