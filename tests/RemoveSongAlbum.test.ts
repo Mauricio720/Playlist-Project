@@ -26,11 +26,7 @@ describe("Remove song in album", async () => {
       name: "any",
       picture: "any",
     },
-    user: {
-      id: "any",
-      name: "any",
-      email: "any@any.com",
-    },
+    userId: "any",
   };
 
   const INITIAL_VALUE_ALBUM: Album.Props = {
@@ -62,12 +58,13 @@ describe("Remove song in album", async () => {
       name: "any",
       year: "any",
       cover: "any",
+      artist: {
+        id: "any",
+        name: "any",
+        picture: "any",
+      },
     },
-    user: {
-      id: "any",
-      name: "any",
-      email: "any@any.com",
-    },
+    userId: "any",
   };
 
   const identifier: Identifier = {

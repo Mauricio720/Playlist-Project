@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { CreateSong, CreateSongDTO } from "application/useCases/CreateSong";
 import assert from "assert";
 import { ObjectNotFound } from "domain/errors/ObjectNotFound";
@@ -14,8 +13,9 @@ import { Encrypt } from "infra/security/Encrypt";
 import { Authenticator } from "infra/security/Authenticator";
 import { CategoryRepositoryMemory } from "infra/repositories/memory/CategoryRepositoryMemory";
 import { User } from "domain/entities/User";
+import { DeleteSong } from "application/useCases/DeleteSong";
 
-describe("Create Song", async () => {
+describe("Delete Song", async () => {
   const identifier: Identifier = {
     createId() {
       return "1";
@@ -30,17 +30,17 @@ describe("Create Song", async () => {
     },
     duration: 1.0,
     artist: {
-      id: "any",
+      id: "1",
       name: "any",
       picture: "any",
     },
     album: {
-      id: "any",
+      id: "1",
       name: "any",
       year: "any",
       cover: "any",
       artist: {
-        id: "any",
+        id: "1",
         name: "any",
         picture: "any",
       },
@@ -107,88 +107,18 @@ describe("Create Song", async () => {
   await createUser.execute(INITIAL_VALUES_USER);
   await createArtist.execute(INITIAL_VALUE.artist);
   await createAlbum.execute({ ...INITIAL_VALUE.album, songs: [] });
+  await createSong.execute(INITIAL_VALUE, "any");
 
-  it("should create new song", async () => {
-    const song = await createSong.execute(INITIAL_VALUE, "any");
+  const deleteSong = new DeleteSong(songRepository);
 
-    assert.deepEqual(song.id, "1");
-    assert.deepEqual(song.title, "any");
-    assert.deepEqual(song.category.id, "any");
-    assert.deepEqual(song.category.name, "any");
-    assert.deepEqual(song.duration, 1);
-    assert.deepEqual(song.pathSongFile, `${process.env.URI_BACKEND}any`);
-    assert.deepEqual(song.artist.id, "any");
-    assert.deepEqual(song.artist.name, "any");
-    assert.deepEqual(song.artist.picture, "any");
-    assert.deepEqual(
-      new Date(song.dateRegister).toDateString(),
-      new Date().toDateString()
-    );
-    assert.deepEqual(song.album.id, "any");
-    assert.deepEqual(song.album.name, "any");
-    assert.deepEqual(song.album.year, "any");
-    assert.deepEqual(song.album.cover, "any");
-    assert.deepEqual(song.userId, "any");
+  it("should delete song", async () => {
+    const song = await deleteSong.execute("1");
+    assert.deepEqual(song.active, false);
   });
 
-  it("should create new artist when id is not send", async () => {
-    const song = await createSong.execute(
-      { ...INITIAL_VALUE, artist: { ...INITIAL_VALUE.artist, id: "" } },
-      "any"
-    );
-
-    assert.deepEqual(song.artist.id, "1");
-  });
-
-  it("should create new album when id is not send", async () => {
-    const song = await createSong.execute(
-      {
-        ...INITIAL_VALUE,
-        album: {
-          ...INITIAL_VALUE.album,
-          id: "",
-          artist: { ...INITIAL_VALUE.album, id: "" },
-        },
-      },
-      "any"
-    );
-
-    assert.deepEqual(song.album.id, "1");
-  });
-
-  it("should throw when not found album", async () => {
+  it("throw song not found", async () => {
     await assert.rejects(async () => {
-      await createSong.execute(
-        {
-          ...INITIAL_VALUE,
-          album: {
-            ...INITIAL_VALUE.album,
-            id: "wrongId",
-          },
-        },
-        "any"
-      );
-    }, new ObjectNotFound("Album"));
-  });
-
-  it("should throw when not found artist", async () => {
-    await assert.rejects(async () => {
-      await createSong.execute(
-        {
-          ...INITIAL_VALUE,
-          album: {
-            ...INITIAL_VALUE.album,
-            artist: { ...INITIAL_VALUE.album.artist, id: "wrongId" },
-          },
-        },
-        "any"
-      );
-    }, new ObjectNotFound("Artist"));
-  });
-
-  it("throw user not found", async () => {
-    await assert.rejects(async () => {
-      await createSong.execute({ ...INITIAL_VALUE, userId: "wrongId" }, "any");
-    }, new ObjectNotFound("User"));
+      await deleteSong.execute("wrongId");
+    }, new ObjectNotFound("Song"));
   });
 });
