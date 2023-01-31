@@ -5,7 +5,7 @@ export class CategoryRepositoryMemory implements CategogyRepository {
   private categories: Category[] = [];
 
   async list(): Promise<Category[]> {
-    return this.categories;
+    return this.categories.filter((categoryItem) => categoryItem.active);
   }
 
   async create(category: Category): Promise<Category> {
@@ -22,11 +22,10 @@ export class CategoryRepositoryMemory implements CategogyRepository {
     return category;
   }
 
-  async delete(id: string): Promise<void> {
-    const filterCategories = this.categories.filter(
-      (categoryItem) => categoryItem.id !== id
-    );
-    this.categories = filterCategories;
+  async delete(id: string): Promise<Category> {
+    const index = this.categories.findIndex((category) => category.id === id);
+    this.categories[index].active = false;
+    return this.categories[index];
   }
 
   async findById(id: string): Promise<Category | null> {

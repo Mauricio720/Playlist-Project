@@ -1,7 +1,6 @@
 import { CategogyRepository } from "application/repositories/CategoryRepository";
 import { CreateCategory } from "application/useCases/CreateCategory";
 import { DeleteCategory } from "application/useCases/DeleteCategory";
-import { UpdateCategory } from "application/useCases/UpdateCategory";
 import { Server } from "infra/http/Server";
 import { Identifier } from "infra/security/Identifier";
 import { Storage } from "infra/storage/Storage";
@@ -37,34 +36,9 @@ export class CategoryController {
       }
     );
 
-    this.server.put(
-      "/category",
-      this.storage.middleware({ key: "file", path: "/images/categories" }),
-      async (req, res) => {
-        try {
-          const updateCategory = new UpdateCategory(
-            this.categoryRepository,
-            this.storage
-          );
-          const category = await updateCategory.execute(
-            req.body.id,
-            req.body.name,
-            req.file.location
-          );
-          res.json(category).end();
-        } catch (err) {
-          this.storage.deleteFile(req.file.key);
-          res.status(400).json(err.message).end();
-        }
-      }
-    );
-
     this.server.delete("/category", async (req, res) => {
       try {
-        const deleteCategory = new DeleteCategory(
-          this.categoryRepository,
-          this.storage
-        );
+        const deleteCategory = new DeleteCategory(this.categoryRepository);
         await deleteCategory.execute(req.body.id);
         res.end();
       } catch (err) {

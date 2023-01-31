@@ -13,19 +13,19 @@ export class CreateArtist {
     data: Omit<Artist.Props, "id">,
     file?: string
   ): Promise<Artist> {
-    
-    const artist = new Artist({
-      ...data,
-      id: this.identifier.createId(),
-      picture: file,
-    });
     const artistAlreadyExists = await this.artistRepository.findByName(
-      artist.name
+      data.name
     );
 
     if (artistAlreadyExists) {
       throw new AlreadyExists("Artist");
     }
+
+    const artist = new Artist({
+      ...data,
+      id: this.identifier.createId(),
+      picture: file,
+    });
 
     await this.artistRepository.create(artist);
     return artist;
