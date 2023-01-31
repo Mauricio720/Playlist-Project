@@ -7,8 +7,17 @@ export class ArtistRepositoryDatabase implements ArtistRepository {
     this.connection.setDatabase("artists");
   }
 
-  async list(): Promise<Artist[]> {
-    const response = await this.connection.get({});
+  async list(nameArtistLetter?: string): Promise<Artist[]> {
+    const regex = new RegExp(nameArtistLetter, "i");
+
+    const response = await this.connection.get(
+      nameArtistLetter
+        ? {
+            name: { $regex: regex },
+          }
+        : {}
+    );
+
     const artists = [];
 
     for (const artist of response) {

@@ -4,8 +4,23 @@ import { Artist } from "domain/entities/Artist";
 export class ArtistRepositoryMemory implements ArtistRepository {
   private artists: Artist[] = [];
 
-  async list(): Promise<Artist[]> {
-    return this.artists;
+  async list(nameArtistLetter?: string): Promise<Artist[]> {
+    let artists = this.artists;
+    if (nameArtistLetter) {
+      artists = this.artists.filter((artistItem) => {
+        let artistFilter = false;
+        for (let index = 0; index < artistItem.name.length; index++) {
+          if (
+            artistItem.name.charAt(index) === nameArtistLetter.toLowerCase()
+          ) {
+            artistFilter = true;
+          }
+        }
+        return artistFilter;
+      });
+    }
+
+    return artists;
   }
 
   async create(artist: Artist): Promise<Artist> {

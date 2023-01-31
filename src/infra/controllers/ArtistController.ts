@@ -1,6 +1,5 @@
 import { ArtistRepository } from "application/repositories/ArtistRepository";
 import { CreateArtist } from "application/useCases/CreateArtist";
-import { create } from "domain";
 import { Artist } from "domain/entities/Artist";
 import { Server } from "infra/http/Server";
 import { Identifier } from "infra/security/Identifier";
@@ -38,7 +37,9 @@ export class ArtistController {
 
     this.server.get("/artist", async (req, res) => {
       try {
-        const artists = await this.artistRepository.list();
+        const artists = await this.artistRepository.list(
+          req.query.name ? req.query.name : ""
+        );
         res.json(artists);
       } catch (err) {
         res.status(400).json(err.message).end();

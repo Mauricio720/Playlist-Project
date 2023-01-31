@@ -1,7 +1,7 @@
 import { Artist } from "domain/entities/Artist";
 
 export interface ArtistRepository {
-  list(): Promise<Artist[]>;
+  list(nameArtistLetter?: string): Promise<Artist[]>;
   create(artist: Artist): Promise<Artist>;
   update(artist: Artist): Promise<Artist>;
   delete(id: string): Promise<void>;

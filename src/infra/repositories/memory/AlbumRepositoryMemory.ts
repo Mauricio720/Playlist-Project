@@ -4,8 +4,21 @@ import { Album } from "domain/entities/Album";
 export class AlbumRepositoryMemory implements AlbumRepository {
   private albums: Album[] = [];
 
-  async list(): Promise<Album[]> {
-    return this.albums;
+  async list(nameAlbumLetter): Promise<Album[]> {
+    let albums = this.albums;
+    if (nameAlbumLetter) {
+      albums = this.albums.filter((albumItem) => {
+        let albumFilter = false;
+        for (let index = 0; index < albumItem.name.length; index++) {
+          if (albumItem.name.charAt(index) === nameAlbumLetter.toLowerCase()) {
+            albumFilter = true;
+          }
+        }
+        return albumFilter;
+      });
+    }
+
+    return albums;
   }
 
   async create(album: Album): Promise<Album> {
