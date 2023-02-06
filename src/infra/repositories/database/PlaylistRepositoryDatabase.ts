@@ -7,14 +7,22 @@ export class PlaylistRepositoryDatabase implements PlaylistRepository {
     this.connection.setDatabase("playlist");
   }
 
-  async list(): Promise<Playlist[]> {
-    const response = await this.connection.get({});
-    const playlist = [];
+  async list(namePlaylistLetter: string): Promise<Playlist[]> {
+    const regex = new RegExp(namePlaylistLetter, "i");
+
+    const response = await this.connection.get<Playlist | null>(
+      namePlaylistLetter
+        ? {
+            name: { $regex: regex },
+          }
+        : {}
+    );
+    const playlists = [];
 
     for (const playlist of response) {
-      playlist.push(new Playlist(playlist));
+      playlists.push(new Playlist(playlist));
     }
-    return playlist;
+    return playlists;
   }
 
   async create(playlist: Playlist): Promise<Playlist> {
