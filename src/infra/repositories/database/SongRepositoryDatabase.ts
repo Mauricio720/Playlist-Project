@@ -1,5 +1,4 @@
 import { SongRepository } from "application/repositories/SongRepository";
-import { throws } from "assert";
 import { Song } from "domain/entities/Song";
 import { Database } from "infra/database/Database";
 
@@ -8,8 +7,16 @@ export class SongRepositoryDatabase implements SongRepository {
     this.connection.setDatabase("songs");
   }
 
-  async list(): Promise<Song[]> {
-    const response = await this.connection.get<Song>({});
+  async list(nameSongLetter: string): Promise<Song[]> {
+    const regex = new RegExp(nameSongLetter, "i");
+
+    const response = await this.connection.get<Song>(
+      nameSongLetter
+        ? {
+            title: { $regex: regex },
+          }
+        : {}
+    );
     const songs = [];
 
     for (const song of response) {
@@ -36,6 +43,15 @@ export class SongRepositoryDatabase implements SongRepository {
 
   async findById(id: string): Promise<Song | null> {
     const songs = await this.connection.get({ id });
+    if (!songs[0]) {
+      return null;
+    }
+
+    return new Song(songs[0]);
+  }
+
+  async findByName(name: string): Promise<Song | null> {
+    const songs = await this.connection.get({ title: name });
     if (!songs[0]) {
       return null;
     }
