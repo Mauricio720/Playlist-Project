@@ -4,8 +4,23 @@ import { Category } from "domain/entities/Category";
 export class CategoryRepositoryMemory implements CategogyRepository {
   private categories: Category[] = [];
 
-  async list(): Promise<Category[]> {
-    return this.categories.filter((categoryItem) => categoryItem.active);
+  async list(nameCategoryLetter: string): Promise<Category[]> {
+    let categories = this.categories;
+    if (nameCategoryLetter) {
+      categories = this.categories.filter((categoryItem) => {
+        let categoryFilter = false;
+        for (let index = 0; index < categoryItem.name.length; index++) {
+          if (
+            categoryItem.name.charAt(index) === nameCategoryLetter.toLowerCase()
+          ) {
+            categoryFilter = true;
+          }
+        }
+        return categoryFilter;
+      });
+    }
+
+    return categories;
   }
 
   async create(category: Category): Promise<Category> {

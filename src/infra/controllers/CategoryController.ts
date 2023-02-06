@@ -46,9 +46,20 @@ export class CategoryController {
       }
     });
 
+    this.server.get("/category", async (req, res) => {
+      try {
+        const categories = await this.categoryRepository.findById(req.query.id);
+        res.json(categories).end();
+      } catch (err) {
+        res.status(400).json(err.message).end();
+      }
+    });
+
     this.server.get("/all_categories", async (req, res) => {
       try {
-        const categories = await this.categoryRepository.list();
+        const categories = await this.categoryRepository.list(
+          req.query.name ? req.query.name : ""
+        );
         res.json(categories).end();
       } catch (err) {
         res.status(400).json(err.message).end();

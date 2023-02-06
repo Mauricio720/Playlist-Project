@@ -7,8 +7,16 @@ export class CategoryRepositoryDatabase implements CategogyRepository {
     this.connection.setDatabase("categories");
   }
 
-  async list(): Promise<Category[]> {
-    const response = await this.connection.get({});
+  async list(nameCategoryLetter: string): Promise<Category[]> {
+    const regex = new RegExp(nameCategoryLetter, "i");
+
+    const response = await this.connection.get<Category>(
+      nameCategoryLetter
+        ? {
+            name: { $regex: regex },
+          }
+        : {}
+    );
     const categories = [];
 
     for (const category of response) {
@@ -36,6 +44,7 @@ export class CategoryRepositoryDatabase implements CategogyRepository {
   async findById(id: string): Promise<Category | null> {
     const categories = await this.connection.get<Category | null>({
       id,
+      active: true,
     });
 
     if (!categories[0]) {
