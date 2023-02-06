@@ -7,11 +7,7 @@ describe("Filter Playlist By Name", async () => {
     const INITIAL_VALUE = {
       id: "any",
       title: "any",
-      user: {
-        id: "any",
-        name: "any",
-        email: "any",
-      },
+      userId: "any",
       songs: [
         {
           id: "any",
