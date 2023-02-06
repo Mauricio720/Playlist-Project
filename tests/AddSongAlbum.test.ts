@@ -8,7 +8,9 @@ import { Song } from "domain/entities/Song";
 import { ObjectNotFound } from "domain/errors/ObjectNotFound";
 import { AlbumRepositoryMemory } from "infra/repositories/memory/AlbumRepositoryMemory";
 import { ArtistRepositoryMemory } from "infra/repositories/memory/ArtistRepositoryMemory";
+import { CategoryRepositoryMemory } from "infra/repositories/memory/CategoryRepositoryMemory";
 import { SongRepositoryMemory } from "infra/repositories/memory/SongRepositoryMemory";
+import { UserRepositoryMemory } from "infra/repositories/memory/UserRepositoryMemory";
 import { Identifier } from "infra/security/Identifier";
 
 describe("Add song in album", async () => {
@@ -75,7 +77,9 @@ describe("Add song in album", async () => {
 
   const albumRepository = new AlbumRepositoryMemory();
   const songRepository = new SongRepositoryMemory();
+  const userRepository = new UserRepositoryMemory();
   const artistRepository = new ArtistRepositoryMemory();
+  const categoryRepository = new CategoryRepositoryMemory();
 
   const createArtist = new CreateArtist(identifier, artistRepository);
   const createAlbum = new CreateAlbum(
@@ -88,6 +92,8 @@ describe("Add song in album", async () => {
     songRepository,
     artistRepository,
     albumRepository,
+    userRepository,
+    categoryRepository,
     identifier
   );
 

@@ -85,6 +85,8 @@ describe("Delete Song", async () => {
     songRepository,
     artistRepository,
     albumRepository,
+    userRepository,
+    categoryRepository,
     identifier
   );
 

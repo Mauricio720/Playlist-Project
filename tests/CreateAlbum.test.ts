@@ -59,6 +59,7 @@ describe("Create Album", async () => {
       artistRepository,
       identifier
     );
+
     const album = await createAlbum.execute({
       ...INITIAL_VALUE,
       artist: { ...INITIAL_VALUE.artist, id: "", name: "any2" },

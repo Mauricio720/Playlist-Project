@@ -14,6 +14,8 @@ import { Encrypt } from "infra/security/Encrypt";
 import { Authenticator } from "infra/security/Authenticator";
 import { CategoryRepositoryMemory } from "infra/repositories/memory/CategoryRepositoryMemory";
 import { User } from "domain/entities/User";
+import { CreateCategory } from "application/useCases/CreateCategory";
+import { AlreadyExists } from "domain/errors/AlreadyExists";
 
 describe("Create Song", async () => {
   const identifier: Identifier = {
@@ -25,27 +27,27 @@ describe("Create Song", async () => {
   const INITIAL_VALUE: CreateSongDTO = {
     title: "any",
     category: {
-      id: "any",
+      id: "1",
       name: "any",
     },
     duration: 1.0,
     artist: {
-      id: "any",
+      id: "1",
       name: "any",
       picture: "any",
     },
     album: {
-      id: "any",
+      id: "1",
       name: "any",
       year: "any",
       cover: "any",
       artist: {
-        id: "any",
+        id: "1",
         name: "any",
         picture: "any",
       },
     },
-    userId: "any",
+    userId: "1",
   };
 
   const encrypt: Encrypt = {
@@ -57,12 +59,11 @@ describe("Create Song", async () => {
     },
   };
 
-  const INITIAL_VALUES_USER: User.Props = {
-    id: "any",
+  const INITIAL_VALUES_USER: Omit<User.Props, "id"> = {
     name: "any",
     email: "any@any.com",
+    permission: "Adm",
     password: "any",
-    dateRegister: new Date(),
     favoriteCategory: [],
     favoriteArtist: [],
   };
@@ -85,8 +86,12 @@ describe("Create Song", async () => {
     songRepository,
     artistRepository,
     albumRepository,
+    userRepository,
+    categoryRepository,
     identifier
   );
+
+  const createCategory = new CreateCategory(identifier, categoryRepository);
 
   const authenticador: Authenticator = {
     createToken() {
@@ -104,36 +109,39 @@ describe("Create Song", async () => {
     categoryRepository
   );
 
-  await createUser.execute(INITIAL_VALUES_USER);
   await createArtist.execute(INITIAL_VALUE.artist);
   await createAlbum.execute({ ...INITIAL_VALUE.album, songs: [] });
+  await createCategory.execute("any");
+  await createUser.execute(INITIAL_VALUES_USER);
 
   it("should create new song", async () => {
     const song = await createSong.execute(INITIAL_VALUE, "any");
 
     assert.deepEqual(song.id, "1");
     assert.deepEqual(song.title, "any");
-    assert.deepEqual(song.category.id, "any");
+    assert.deepEqual(song.category.id, "1");
     assert.deepEqual(song.category.name, "any");
     assert.deepEqual(song.duration, 1);
     assert.deepEqual(song.pathSongFile, `${process.env.URI_BACKEND}any`);
-    assert.deepEqual(song.artist.id, "any");
+    assert.deepEqual(song.artist.id, "1");
     assert.deepEqual(song.artist.name, "any");
-    assert.deepEqual(song.artist.picture, "any");
     assert.deepEqual(
       new Date(song.dateRegister).toDateString(),
       new Date().toDateString()
     );
-    assert.deepEqual(song.album.id, "any");
+    assert.deepEqual(song.album.id, "1");
     assert.deepEqual(song.album.name, "any");
     assert.deepEqual(song.album.year, "any");
-    assert.deepEqual(song.album.cover, "any");
-    assert.deepEqual(song.userId, "any");
+    assert.deepEqual(song.userId, "1");
   });
 
   it("should create new artist when id is not send", async () => {
     const song = await createSong.execute(
-      { ...INITIAL_VALUE, artist: { ...INITIAL_VALUE.artist, id: "" } },
+      {
+        ...INITIAL_VALUE,
+        title: "newSong",
+        artist: { ...INITIAL_VALUE.artist, id: "", name: "wrongArtist" },
+      },
       "any"
     );
 
@@ -144,6 +152,7 @@ describe("Create Song", async () => {
     const song = await createSong.execute(
       {
         ...INITIAL_VALUE,
+        title: "newSong3",
         album: {
           ...INITIAL_VALUE.album,
           id: "",
@@ -154,6 +163,12 @@ describe("Create Song", async () => {
     );
 
     assert.deepEqual(song.album.id, "1");
+  });
+
+  it("should throw name song already exists ", async () => {
+    await assert.rejects(async () => {
+      await createSong.execute(INITIAL_VALUE, "any");
+    }, new AlreadyExists("Song"));
   });
 
   it("should throw when not found album", async () => {
@@ -176,10 +191,7 @@ describe("Create Song", async () => {
       await createSong.execute(
         {
           ...INITIAL_VALUE,
-          album: {
-            ...INITIAL_VALUE.album,
-            artist: { ...INITIAL_VALUE.album.artist, id: "wrongId" },
-          },
+          artist: { ...INITIAL_VALUE.artist, id: "wrongId" },
         },
         "any"
       );
@@ -190,5 +202,17 @@ describe("Create Song", async () => {
     await assert.rejects(async () => {
       await createSong.execute({ ...INITIAL_VALUE, userId: "wrongId" }, "any");
     }, new ObjectNotFound("User"));
+  });
+
+  it("throw category not found", async () => {
+    await assert.rejects(async () => {
+      await createSong.execute(
+        {
+          ...INITIAL_VALUE,
+          category: { ...INITIAL_VALUE.category, id: "wrongId" },
+        },
+        "any"
+      );
+    }, new ObjectNotFound("Category"));
   });
 });

@@ -10,11 +10,13 @@ import { ArtistRepositoryMemory } from "infra/repositories/memory/ArtistReposito
 import { CreateArtist } from "application/useCases/CreateArtist";
 import { CategoryRepositoryMemory } from "infra/repositories/memory/CategoryRepositoryMemory";
 import { CreateCategory } from "application/useCases/CreateCategory";
+import { AlreadyExists } from "domain/errors/AlreadyExists";
 
 describe("Create User", async () => {
   const INITIAL_VALUES: Omit<User.Props, "id"> = {
     name: "any",
     email: "any@any.com",
+    permission: "Adm",
     password: "any",
     favoriteCategory: [{ id: "1", name: "rock" }],
     favoriteArtist: [{ id: "1", name: "any" }],
@@ -56,14 +58,13 @@ describe("Create User", async () => {
   );
 
   const createArtist = new CreateArtist(identifier, artistRepository);
-  await createArtist.execute({ name: "any" });
+  await createArtist.execute({ name: "newArtist" });
 
   const createCategory = new CreateCategory(identifier, categoryRepository);
-  await createCategory.execute("rock");
+  await createCategory.execute("Rock");
 
   it("should create user", async () => {
     const { user, token } = await createUser.execute(INITIAL_VALUES);
-
     assert.deepEqual(token, "any token");
     assert.deepEqual(user.id, "1");
     assert.deepEqual(user.password, "any_enc");
@@ -73,11 +74,28 @@ describe("Create User", async () => {
     );
   });
 
-  it("throw artist not exists", async () => {
+  it("throw email already exists", async () => {
     await assert.rejects(async () => {
       await createUser.execute({
         name: "any",
         email: "any@any.com",
+        permission: "Adm",
+        password: "any",
+        favoriteCategory: [
+          { id: "any", name: "rock" },
+          { id: "any", name: "rap" },
+        ],
+        favoriteArtist: [{ id: "any", name: "any" }],
+      });
+    }, new AlreadyExists("Email"));
+  });
+
+  it("throw artist not exists", async () => {
+    await assert.rejects(async () => {
+      await createUser.execute({
+        name: "any",
+        email: "any2@any.com",
+        permission: "Adm",
         password: "any",
         favoriteCategory: [
           { id: "any", name: "rock" },
@@ -92,7 +110,8 @@ describe("Create User", async () => {
     await assert.rejects(async () => {
       await createUser.execute({
         name: "any",
-        email: "any@any.com",
+        email: "any3@any.com",
+        permission: "Adm",
         password: "any",
         favoriteCategory: [
           { id: "any", name: "rock" },

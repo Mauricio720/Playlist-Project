@@ -6,6 +6,16 @@ import { Identifier } from "infra/security/Identifier";
 import { SongRepositoryMemory } from "infra/repositories/memory/SongRepositoryMemory";
 import { SongNotFound } from "domain/errors/SongNotFound";
 import { Song } from "domain/entities/Song";
+import { ObjectNotFound } from "domain/errors/ObjectNotFound";
+import { UserRepositoryMemory } from "infra/repositories/memory/UserRepositoryMemory";
+import { CreateUser } from "application/useCases/CreateUser";
+import { CreateArtist } from "application/useCases/CreateArtist";
+import { CreateCategory } from "application/useCases/CreateCategory";
+import { Authenticator } from "infra/security/Authenticator";
+import { Encrypt } from "infra/security/Encrypt";
+import { ArtistRepositoryMemory } from "infra/repositories/memory/ArtistRepositoryMemory";
+import { CategoryRepositoryMemory } from "infra/repositories/memory/CategoryRepositoryMemory";
+import { User } from "domain/entities/User";
 
 describe("should create playlist", async () => {
   const identifier: Identifier = {
@@ -17,11 +27,7 @@ describe("should create playlist", async () => {
   const INITIAL_VALUES: Playlist.Props = {
     id: "1",
     title: "any",
-    user: {
-      id: "any",
-      name: "any",
-      email: "any",
-    },
+    userId: "1",
     songs: [
       {
         id: "any",
@@ -82,14 +88,60 @@ describe("should create playlist", async () => {
   };
 
   const playlistRepository = new PlaylistRepositoryMemory();
-
   const songRepository = new SongRepositoryMemory();
+
+  const INITIAL_VALUES_USER: Omit<User.Props, "id"> = {
+    name: "any",
+    email: "any@any.com",
+    permission: "Adm",
+    password: "any",
+    favoriteCategory: [{ id: "1", name: "rock" }],
+    favoriteArtist: [{ id: "1", name: "any" }],
+  };
+
+  const userRepository = new UserRepositoryMemory();
+  const artistRepository = new ArtistRepositoryMemory();
+  const categoryRepository = new CategoryRepositoryMemory();
+
+  const encrypt: Encrypt = {
+    async compare(password, encripted) {
+      return `${password}_enc` === encripted;
+    },
+    encript(password) {
+      return `${password}_enc`;
+    },
+  };
+
+  const authenticador: Authenticator = {
+    createToken() {
+      return "any token";
+    },
+    decoder() {},
+  };
+
+  const createArtist = new CreateArtist(identifier, artistRepository);
+  await createArtist.execute({ name: "newArtist" });
+
+  const createCategory = new CreateCategory(identifier, categoryRepository);
+  await createCategory.execute("Rock");
+
+  const createUser = new CreateUser(
+    identifier,
+    encrypt,
+    authenticador,
+    userRepository,
+    artistRepository,
+    categoryRepository
+  );
+  await createUser.execute(INITIAL_VALUES_USER);
+
   await songRepository.create(INITIAL_VALUES.songs[0] as Song);
   await songRepository.create(INITIAL_VALUES.songs[1] as Song);
 
   const createPlaylist = new CreatePlaylist(
     playlistRepository,
     songRepository,
+    userRepository,
     identifier
   );
 
@@ -107,5 +159,11 @@ describe("should create playlist", async () => {
         songs: [{ ...INITIAL_VALUES.songs[0], id: "wrongId" }],
       });
     }, new SongNotFound());
+  });
+
+  it("throw user not found", async () => {
+    await assert.rejects(async () => {
+      await createPlaylist.execute({ ...INITIAL_VALUES, userId: "wrongId" });
+    }, new ObjectNotFound("User"));
   });
 });

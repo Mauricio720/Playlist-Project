@@ -7,11 +7,7 @@ describe("Playlist", async () => {
   const INITIAL_VALUES: Playlist.Props = {
     id: "any",
     title: "any",
-    user: {
-      id: "any",
-      name: "any",
-      email: "any",
-    },
+    userId: "any",
     songs: [
       {
         id: "any",
@@ -76,7 +72,7 @@ describe("Playlist", async () => {
 
     assert.deepEqual(playlist.id, "any");
     assert.deepEqual(playlist.title, "any");
-    assert.deepEqual(playlist.user.id, "any");
+    assert.deepEqual(playlist.userId, "any");
     assert.deepEqual(playlist.songs.length, 2);
   });
 
@@ -88,7 +84,7 @@ describe("Playlist", async () => {
 
   it("throw error when user is not send", async () => {
     assert.throws(() => {
-      new Playlist({ ...INITIAL_VALUES, user: null });
+      new Playlist({ ...INITIAL_VALUES, userId: null });
     }, new FieldMissing("User"));
   });
 
