@@ -23,6 +23,7 @@ export class CreateAlbum {
       albumData.artist = await this.artistRepository.findById(
         albumData.artist.id
       );
+
       if (!albumData.artist) {
         throw new ObjectNotFound("Artist");
       }

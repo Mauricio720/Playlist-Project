@@ -1,5 +1,6 @@
 export type Request = {
   url: string;
+  method?: string;
   file?: {
     [key: string]: any;
   };
@@ -18,7 +19,6 @@ export type Request = {
   headers: any;
 };
 
-
 export type Response = {
   status(status: number): Response;
   json(body: any): Response;
@@ -28,7 +28,7 @@ export type Response = {
   setHeader(key: string, value: string): any;
 };
 
-export type NextFunction = (message?:string) => void;
+export type NextFunction = (message?: string) => void;
 
 export type Method = "get" | "post" | "put" | "delete";
 

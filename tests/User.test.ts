@@ -8,6 +8,7 @@ describe("User", () => {
     name: "any",
     email: "any@any.com",
     password: "any",
+    permission: "Adm",
     dateRegister: new Date(),
     favoriteCategory: [
       { id: "any", name: "rock" },
@@ -26,13 +27,19 @@ describe("User", () => {
       new Date().toDateString()
     );
     assert.deepEqual(user.active, true);
+    assert.deepEqual(user.permission, "Adm");
     assert.deepEqual(user.favoriteCategory.length, 2);
     assert.deepEqual(user.favoriteArtist.length, 1);
   });
 
-  it("throw error name or email missing user", () => {
+  it("throw error name or email or permission missing user", () => {
     assert.throws(() => {
-      new User({ ...INITIAL_VALUES, name: "", email: "" });
-    }, new FieldMissing("Name and Email"));
+      new User({
+        ...INITIAL_VALUES,
+        name: "",
+        email: "",
+        permission: "" as User.Permissions,
+      });
+    }, new FieldMissing("Name or Email or Permission"));
   });
 });

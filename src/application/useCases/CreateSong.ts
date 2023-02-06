@@ -1,11 +1,12 @@
 import { AlbumRepository } from "application/repositories/AlbumRepository";
 import { ArtistRepository } from "application/repositories/ArtistRepository";
+import { CategogyRepository } from "application/repositories/CategoryRepository";
 import { SongRepository } from "application/repositories/SongRepository";
+import { UserRepository } from "application/repositories/UserRepository";
 import { Album } from "domain/entities/Album";
 import { Artist } from "domain/entities/Artist";
 import { Category } from "domain/entities/Category";
 import { Song } from "domain/entities/Song";
-import { User } from "domain/entities/User";
 import { AlreadyExists } from "domain/errors/AlreadyExists";
 import { ObjectNotFound } from "domain/errors/ObjectNotFound";
 import { Identifier } from "infra/security/Identifier";
@@ -15,6 +16,8 @@ export class CreateSong {
     private readonly songRepository: SongRepository,
     private readonly artistRepository: ArtistRepository,
     private readonly albumRepository: AlbumRepository,
+    private readonly userRepository: UserRepository,
+    private readonly categoryRepository: CategogyRepository,
     private readonly identifier: Identifier
   ) {}
 
@@ -50,10 +53,25 @@ export class CreateSong {
         })
       );
     } else {
-      data.artist = await this.albumRepository.findById(data.album.id);
-      if (!data.artist) {
+      data.album = await this.albumRepository.findById(data.album.id);
+      if (!data.album) {
         throw new ObjectNotFound("Album");
       }
+    }
+
+    const user = await this.userRepository.findById(data.userId);
+    if (!user) {
+      throw new ObjectNotFound("User");
+    }
+
+    const category = await this.categoryRepository.findById(data.category.id);
+    if (!category) {
+      throw new ObjectNotFound("Category");
+    }
+
+    const songAlreadyExists = await this.songRepository.findByName(data.title);
+    if (songAlreadyExists) {
+      throw new AlreadyExists("Song");
     }
 
     const song = new Song({

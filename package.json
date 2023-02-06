@@ -1,7 +1,7 @@
 {
   "name": "playlist_project",
   "version": "1.0.0",
-  "description": "Projeto de estudo do clean architecture e o node com mongo",
+  "description": "Projeto de estudo do clean architecture e o node com mongoDB",
   "main": "index.js",
   "scripts": {
     "test": "mocha --watch tests/*",

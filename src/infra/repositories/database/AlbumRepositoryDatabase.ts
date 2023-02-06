@@ -7,8 +7,16 @@ export class AlbumRepositoryDatabase implements AlbumRepository {
     this.connection.setDatabase("albuns");
   }
 
-  async list(): Promise<Album[]> {
-    const response = await this.connection.get<Album>({});
+  async list(nameAlbumLetter: string): Promise<Album[]> {
+    const regex = new RegExp(nameAlbumLetter, "i");
+
+    const response = await this.connection.get<Album>(
+      nameAlbumLetter
+        ? {
+            name: { $regex: regex },
+          }
+        : {}
+    );
     const albuns = [];
 
     for (const album of response) {

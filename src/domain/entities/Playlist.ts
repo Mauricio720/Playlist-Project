@@ -1,13 +1,12 @@
 import { EmptyPlaylist } from "domain/errors/EmptyPlaylist";
 import { FieldMissing } from "domain/errors/FieldMissing";
 import { Song } from "./Song";
-import { User } from "./User";
 
 export namespace Playlist {
   export interface Props {
     readonly id: string;
     title: string;
-    user: User.Props;
+    userId: string;
     songs: Song.Props[];
   }
 }
@@ -15,8 +14,9 @@ export namespace Playlist {
 export class Playlist {
   public readonly id: string;
   public title: string;
+  public public = true;
   public date: Date;
-  public user: User.Props;
+  public userId: string;
   public songs: Song[];
 
   constructor(props: Playlist.Props) {
@@ -26,7 +26,7 @@ export class Playlist {
       throw new FieldMissing("Title");
     }
 
-    if (!this.user) {
+    if (!this.userId) {
       throw new FieldMissing("User");
     }
 
@@ -43,5 +43,13 @@ export class Playlist {
 
   addSong(song: Song) {
     this.songs.push(song);
+  }
+
+  removeSong(idSong: string) {
+    this.songs = this.songs.filter((songItem) => songItem.id !== idSong);
+  }
+
+  changePublic() {
+    this.public = !this.public;
   }
 }

@@ -55,8 +55,10 @@ export class AlbumController {
 
     this.server.get("/all_albuns", async (req, res) => {
       try {
-        const album = await this.albumRepository.list();
-        res.json(album).end();
+        const albuns = await this.albumRepository.list(
+          req.query.name ? req.query.name : ""
+        );
+        res.json(albuns).end();
       } catch (err) {
         res.status(400).json(err.message).end();
       }

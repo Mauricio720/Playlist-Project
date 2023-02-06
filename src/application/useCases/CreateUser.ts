@@ -8,6 +8,7 @@ import { ArtistRepository } from "application/repositories/ArtistRepository";
 import { CategogyRepository } from "application/repositories/CategoryRepository";
 import { ObjectNotFound } from "domain/errors/ObjectNotFound";
 import { Category } from "domain/entities/Category";
+import { AlreadyExists } from "domain/errors/AlreadyExists";
 
 export class CreateUser {
   constructor(
@@ -23,6 +24,11 @@ export class CreateUser {
     const newId = this.identifier.createId();
     const password = this.encrypt.encript(data.password);
 
+    const userAlreadyExists = await this.userRepository.findByEmail(data.email);
+    if (userAlreadyExists) {
+      throw new AlreadyExists("Email");
+    }
+
     const user = new User({
       ...data,
       id: newId,
@@ -30,16 +36,20 @@ export class CreateUser {
       dateRegister: new Date(),
     });
 
-    const artistNotFound = await this.verifyExistArtist(user.favoriteArtist);
-    if (!artistNotFound) {
-      throw new ObjectNotFound("Artist");
+    if (user.favoriteArtist.length > 0) {
+      const artistNotFound = await this.verifyExistArtist(user.favoriteArtist);
+      if (!artistNotFound) {
+        throw new ObjectNotFound("Artist");
+      }
     }
 
-    const categoryNotFound = await this.verifyExistCategory(
-      user.favoriteCategory
-    );
-    if (!categoryNotFound) {
-      throw new ObjectNotFound("Category");
+    if (user.favoriteCategory.length > 0) {
+      const categoryNotFound = await this.verifyExistCategory(
+        user.favoriteCategory
+      );
+      if (!categoryNotFound) {
+        throw new ObjectNotFound("Category");
+      }
     }
 
     await this.userRepository.create(user);

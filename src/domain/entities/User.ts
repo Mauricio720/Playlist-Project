@@ -11,7 +11,10 @@ export namespace User {
     dateRegister?: Date;
     favoriteCategory?: Category.Props[];
     favoriteArtist?: Artist.Props[];
+    permission?: User.Permissions;
   }
+
+  export type Permissions = "Adm" | "Artist" | "Normal";
 }
 
 export class User {
@@ -22,13 +25,14 @@ export class User {
   public dateRegister: Date;
   public favoriteCategory: Category[];
   public favoriteArtist: Artist[];
+  public permission: User.Permissions;
   public active = true;
 
   constructor(props: User.Props) {
     Object.assign(this, props);
 
-    if (!this.name || !this.email) {
-      throw new FieldMissing("Name and Email");
+    if (!this.name || !this.email || !this.permission) {
+      throw new FieldMissing("Name or Email or Permission");
     }
   }
 
