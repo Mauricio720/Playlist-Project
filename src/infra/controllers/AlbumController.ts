@@ -5,7 +5,9 @@ import { AddSongAlbum } from "application/useCases/AddSongAlbum";
 import { CreateAlbum } from "application/useCases/CreateAlbum";
 import { RemoveSongAlbum } from "application/useCases/RemoveSongAlbum";
 import { Album } from "domain/entities/Album";
+import { NotAuthorized } from "domain/errors/NotAuthorized";
 import { Server } from "infra/http/Server";
+import { GateAdapter } from "infra/security/GateAdapter";
 import { Identifier } from "infra/security/Identifier";
 import { Storage } from "infra/storage/Storage";
 
@@ -26,6 +28,9 @@ export class AlbumController {
       ]),
       async (req, res) => {
         try {
+          if (!(await GateAdapter.allows("JUST_ADM_OR_ARTIST"))) {
+            throw new NotAuthorized();
+          }
           const createAlbum = await new CreateAlbum(
             this.albumRepository,
             this.artistRepository,
@@ -66,14 +71,18 @@ export class AlbumController {
 
     this.server.post("/album/addSong", async (req, res) => {
       try {
+        if (!(await GateAdapter.allows("JUST_ADM_OR_ARTIST"))) {
+          throw new NotAuthorized();
+        }
         const addSongAlbum = await new AddSongAlbum(
           this.albumRepository,
           this.songRepository
         );
+        console.log(req.body);
 
         const album = await addSongAlbum.execute(
           req.body.idAlbum,
-          JSON.parse(req.body.songs)
+          req.body.songs
         );
 
         res.json(album).end();
@@ -84,6 +93,9 @@ export class AlbumController {
 
     this.server.post("/album/removeSong", async (req, res) => {
       try {
+        if (!(await GateAdapter.allows("JUST_ADM_OR_ARTIST"))) {
+          throw new NotAuthorized();
+        }
         const removeSongAlbum = await new RemoveSongAlbum(
           this.albumRepository,
           this.songRepository

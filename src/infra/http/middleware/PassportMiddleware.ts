@@ -23,6 +23,7 @@ export class PassportMidleware implements Middleware {
     const allowsRoute = [
       { route: "/auth", method: "POST" },
       { route: "/user", method: "POST" },
+      { route: "/all_categories", method: "GET" },
     ];
 
     let isAllows = false;

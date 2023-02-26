@@ -1,16 +1,21 @@
 import { AddSongAlbum } from "application/useCases/AddSongAlbum";
 import { CreateAlbum } from "application/useCases/CreateAlbum";
 import { CreateArtist } from "application/useCases/CreateArtist";
+import { CreateCategory } from "application/useCases/CreateCategory";
 import { CreateSong, CreateSongDTO } from "application/useCases/CreateSong";
+import { CreateUser } from "application/useCases/CreateUser";
 import assert from "assert";
 import { Album } from "domain/entities/Album";
 import { Song } from "domain/entities/Song";
+import { User } from "domain/entities/User";
 import { ObjectNotFound } from "domain/errors/ObjectNotFound";
 import { AlbumRepositoryMemory } from "infra/repositories/memory/AlbumRepositoryMemory";
 import { ArtistRepositoryMemory } from "infra/repositories/memory/ArtistRepositoryMemory";
 import { CategoryRepositoryMemory } from "infra/repositories/memory/CategoryRepositoryMemory";
 import { SongRepositoryMemory } from "infra/repositories/memory/SongRepositoryMemory";
 import { UserRepositoryMemory } from "infra/repositories/memory/UserRepositoryMemory";
+import { Authenticator } from "infra/security/Authenticator";
+import { Encrypt } from "infra/security/Encrypt";
 import { Identifier } from "infra/security/Identifier";
 
 describe("Add song in album", async () => {
@@ -46,33 +51,58 @@ describe("Add song in album", async () => {
   const INITIAL_VALUE_SONG_ONE: CreateSongDTO = {
     title: "any",
     category: {
-      id: "any",
+      id: "1",
       name: "any",
     },
     duration: 1.0,
     artist: {
-      id: "any",
+      id: "1",
       name: "any",
       picture: "any",
     },
     album: {
-      id: "any",
+      id: "1",
       name: "any",
       year: "any",
       cover: "any",
       artist: {
-        id: "any",
+        id: "1",
         name: "any",
         picture: "any",
       },
     },
-    userId: "any",
+    userId: "1",
+  };
+
+  const INITIAL_VALUES_USER: Omit<User.Props, "id"> = {
+    name: "any",
+    email: "any@any.com",
+    permission: "Adm",
+    password: "any",
+    favoriteCategory: [],
+    favoriteArtist: [],
   };
 
   const identifier: Identifier = {
     createId() {
       return "1";
     },
+  };
+
+  const encrypt: Encrypt = {
+    async compare(password, encripted) {
+      return `${password}_enc` === encripted;
+    },
+    encript(password) {
+      return `${password}_enc`;
+    },
+  };
+
+  const authenticador: Authenticator = {
+    createToken() {
+      return "any token";
+    },
+    decoder() {},
   };
 
   const albumRepository = new AlbumRepositoryMemory();
@@ -96,9 +126,21 @@ describe("Add song in album", async () => {
     categoryRepository,
     identifier
   );
+  const createUser = new CreateUser(
+    identifier,
+    encrypt,
+    authenticador,
+    userRepository,
+    artistRepository,
+    categoryRepository
+  );
+
+  const createCategory = new CreateCategory(identifier, categoryRepository);
 
   await createArtist.execute({ name: "any" });
+  await createCategory.execute("Rock");
   await createAlbum.execute(INITIAL_VALUE_ALBUM);
+  await createUser.execute(INITIAL_VALUES_USER);
   await createSong.execute(INITIAL_VALUE_SONG_ONE, "any");
 
   const addSongAlbum = new AddSongAlbum(albumRepository, songRepository);

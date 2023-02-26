@@ -6,7 +6,10 @@ import { UserRepository } from "application/repositories/UserRepository";
 import { ChangePublicSong } from "application/useCases/ChangePublicSong";
 import { CreateSong } from "application/useCases/CreateSong";
 import { FieldMissing } from "domain/errors/FieldMissing";
+import { NotAuthorized } from "domain/errors/NotAuthorized";
 import { Server } from "infra/http/Server";
+import { Auth } from "infra/security/Auth";
+import { GateAdapter } from "infra/security/GateAdapter";
 import { Identifier } from "infra/security/Identifier";
 import { Storage } from "infra/storage/Storage";
 
@@ -30,6 +33,10 @@ export class SongController {
       ]),
       async (req, res) => {
         try {
+          if (!(await GateAdapter.allows("JUST_ADM"))) {
+            throw new NotAuthorized();
+          }
+
           const createSong = new CreateSong(
             this.songRepository,
             this.artistRepository,

@@ -7,7 +7,6 @@ import { UpdateUser } from "application/useCases/UpdateUser";
 import { User } from "domain/entities/User";
 import { NotAuthorized } from "domain/errors/NotAuthorized";
 import { Server } from "infra/http/Server";
-import { Auth } from "infra/security/Auth";
 import { Authenticator } from "infra/security/Authenticator";
 import { Encrypt } from "infra/security/Encrypt";
 import { GateAdapter } from "infra/security/GateAdapter";
@@ -58,7 +57,7 @@ export class UserController {
 
     this.server.delete("/user", async (req, res) => {
       try {
-        if (!GateAdapter.allows("JUST_ADM")) {
+        if (!(await GateAdapter.allows("JUST_ADM"))) {
           throw new NotAuthorized();
         }
         const deleteUser = new DeleteUser(this.userRepository);
@@ -80,7 +79,7 @@ export class UserController {
 
     this.server.get("/all_users", async (req, res) => {
       try {
-        if (!GateAdapter.allows("JUST_ADM")) {
+        if (!(await GateAdapter.allows("JUST_ADM"))) {
           throw new NotAuthorized();
         }
         const users = await this.userRepository.list();

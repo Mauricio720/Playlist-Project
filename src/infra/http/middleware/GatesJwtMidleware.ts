@@ -20,6 +20,10 @@ export class GatesJwtMidleware implements Middleware {
       return user.permission === "Normal";
     });
 
+    GateAdapter.registerGate("JUST_ADM_OR_ARTIST", async (user) => {
+      return user.permission === "Adm" || user.permission === "Artist";
+    });
+
     next();
   }
 }

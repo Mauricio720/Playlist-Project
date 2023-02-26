@@ -1,7 +1,9 @@
 import { ArtistRepository } from "application/repositories/ArtistRepository";
 import { CreateArtist } from "application/useCases/CreateArtist";
 import { Artist } from "domain/entities/Artist";
+import { NotAuthorized } from "domain/errors/NotAuthorized";
 import { Server } from "infra/http/Server";
+import { GateAdapter } from "infra/security/GateAdapter";
 import { Identifier } from "infra/security/Identifier";
 import { Storage } from "infra/storage/Storage";
 
@@ -20,6 +22,9 @@ export class ArtistController {
       }),
       async (req, res) => {
         try {
+          if (!(await GateAdapter.allows("JUST_ADM_OR_ARTIST"))) {
+            throw new NotAuthorized();
+          }
           const createArtist = new CreateArtist(
             this.identifier,
             this.artistRepository

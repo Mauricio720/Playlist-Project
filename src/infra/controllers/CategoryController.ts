@@ -1,7 +1,9 @@
 import { CategogyRepository } from "application/repositories/CategoryRepository";
 import { CreateCategory } from "application/useCases/CreateCategory";
 import { DeleteCategory } from "application/useCases/DeleteCategory";
+import { NotAuthorized } from "domain/errors/NotAuthorized";
 import { Server } from "infra/http/Server";
+import { GateAdapter } from "infra/security/GateAdapter";
 import { Identifier } from "infra/security/Identifier";
 import { Storage } from "infra/storage/Storage";
 
@@ -20,6 +22,9 @@ export class CategoryController {
       }),
       async (req, res) => {
         try {
+          if (!(await GateAdapter.allows("JUST_ADM"))) {
+            throw new NotAuthorized();
+          }
           const createCategory = new CreateCategory(
             this.identifier,
             this.categoryRepository
@@ -38,6 +43,9 @@ export class CategoryController {
 
     this.server.delete("/category", async (req, res) => {
       try {
+        if (!(await GateAdapter.allows("JUST_ADM"))) {
+          throw new NotAuthorized();
+        }
         const deleteCategory = new DeleteCategory(this.categoryRepository);
         await deleteCategory.execute(req.body.id);
         res.end();

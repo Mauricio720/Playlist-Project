@@ -1,4 +1,3 @@
-import { Playlist } from "domain/entities/Playlist";
 import { Song } from "domain/entities/Song";
 import { Auth } from "infra/security/Auth";
 
@@ -9,7 +8,7 @@ export class GetSongByFilterPresentation {
 
     if (auth.permission === "Normal" || auth.permission === "Artist") {
       filterSongs = songs.filter(
-        (songItem) => songItem.public && songItem.userId === auth.id
+        (songItem) => songItem.public || songItem.userId === auth.id
       );
     }
 
